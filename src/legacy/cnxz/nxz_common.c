@@ -9,7 +9,7 @@ uint32_t* sub57DD90(uint32_t* this) {
 
 	v1 = this;
 	v2 = calloc(1, 0x224u);
-	*v1 = v2;
+	*v1 = (uint32_t)v2;
 	memset(v2, 0, 0x224u);
 	return v1;
 }

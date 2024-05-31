@@ -466,7 +466,7 @@ uint32_t* sub57E8A0(uint32_t* this) {
 	v1 = this;
 	sub57DD90(this);
 	v2 = calloc(1, sizeof(nxz_table_3));
-	v1[33] = v2;
+	v1[33] = (uint32_t)v2;
 	memcpy(v2, nxz_table_3, sizeof(nxz_table_3));
 	memcpy(v1 + 1, nxz_table_4, sizeof(nxz_table_4));
 	return v1;
@@ -477,7 +477,7 @@ uint32_t* sub57E9A0(uint32_t* this) {
 	uint32_t* v1; // esi
 
 	v1 = this;
-	*this = calloc(1, 0x10000u);
+	*this = (uint32_t)calloc(1, 0x10000u);
 	v1[1] = 0;
 	sub57E8A0(v1 + 2);
 	v1[37] = 0;
@@ -611,7 +611,7 @@ int nxz_decompress(void* a1p, uint8_t* a2p, int* a3p, uint8_t* a4p, int* a5p) {
 	uint32_t* this = a1p;
 	uint8_t* a2 = a2p;
 	uint32_t* a3 = a3p;
-	unsigned int a4 = a4p;
+	unsigned int a4 = (unsigned int)a4p;
 	uint32_t* a5 = a5p;
 	unsigned char* v5; // ebp
 	uint32_t* v6;      // ebx
@@ -758,7 +758,7 @@ int nxz_decompress(void* a1p, uint8_t* a2p, int* a3p, uint8_t* a4p, int* a5p) {
 			return 0;
 		}
 		if (v13 == 272) {
-			sub57DEA0(v6 + 2, v75);
+			sub57DEA0(v6 + 2, (uint16_t*)v75);
 			v19 = 0;
 			v20 = v75;
 			do {

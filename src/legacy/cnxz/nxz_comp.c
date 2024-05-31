@@ -469,7 +469,7 @@ uint32_t* sub_57DF00(uint32_t* this) {
 	v1[1] = 4096;
 	v2 = calloc(1, sizeof(nxz_table_6));
 	v3 = v2;
-	v1[2] = v2;
+	v1[2] = (uint32_t)v2;
 	result = v1;
 	memcpy(v3, nxz_table_6, sizeof(nxz_table_6));
 	return result;
@@ -486,10 +486,10 @@ void* nxz_compress_new() {
 		return 0;
 	}
 	v2 = v0;
-	*v0 = calloc(1, 0x10000u);
+	*v0 = (uint32_t)calloc(1, 0x10000u);
 	v2[1] = 0;
 	sub_57DF00(v2 + 2);
-	v2[5] = calloc(1, 0x10000u);
+	v2[5] = (uint32_t)calloc(1, 0x10000u);
 	v3 = 0;
 	do {
 		v3 += 2;
@@ -663,8 +663,8 @@ int sub_57DFC0(uint32_t* this, int* a2) {
 	char v60[1100]; // [esp+30h] [ebp-44Ch]
 
 	v2 = this;
-	*(uint32_t*)v60 = this;
-	v3 = sub_57DEA0(this, &v60[4]);
+	*(uint32_t*)v60 = (uint32_t)this;
+	v3 = sub_57DEA0(this, (uint16_t*)&v60[4]);
 	v4 = 0;
 	v5 = 0;
 	v6 = 16;
@@ -894,7 +894,7 @@ int sub_57E2C0(uint32_t** this) {
 		*(uint8_t*)v1[3] = HIBYTE(v7);
 		v8 = v1[5];
 		v9 = (char*)v1[3] + 1;
-		v1[3] = v9;
+		v1[3] = (uint32_t*)v9;
 		*v9 = BYTE2(v8);
 		v10 = (int)(v1[6] - 4);
 		v11 = (uint32_t*)((uint32_t)v1[5] << 16);
@@ -921,7 +921,7 @@ int sub_57E2C0(uint32_t** this) {
 			*(uint8_t*)v1[3] = HIBYTE(v20);
 			v21 = (char*)v1[3] + 1;
 			v22 = (unsigned int)v1[5] >> 16;
-			v1[3] = v21;
+			v1[3] = (uint32_t*)v21;
 			*v21 = v22;
 			v23 = v1[5];
 			v24 = (int)(v1[6] - 4);
@@ -960,7 +960,7 @@ int sub_57E7D0(uint32_t** this) {
 		*(uint8_t*)v1[3] = (unsigned int)v1[5] >> 24;
 		v4 = v1[5];
 		v5 = (char*)v1[3] + 1;
-		v1[3] = v5;
+		v1[3] = (uint32_t*)v5;
 		*v5 = BYTE2(v4);
 		v6 = (int)(v1[6] - 4);
 		v7 = (uint32_t*)((uint32_t)v1[5] << 16);
@@ -1024,7 +1024,7 @@ unsigned int sub_57E3F0(uint32_t** this, unsigned int a2, int a3) {
 				*(uint8_t*)v5[3] = (unsigned int)v5[5] >> 24;
 				v13 = v5[5];
 				v14 = (char*)v5[3] + 1;
-				v5[3] = v14;
+				v5[3] = (uint32_t*)v14;
 				*v14 = BYTE2(v13);
 				v15 = (int)(v5[6] - 4);
 				v16 = (uint32_t*)((uint32_t)v5[5] << 16);
@@ -1056,7 +1056,7 @@ uint32_t* sub_57F160(int this, int a2, int a3) {
 		**(uint8_t**)(this + 12) = *(uint32_t*)(this + 20) >> 24;
 		v5 = (uint8_t*)(*(uint32_t*)(this + 12) + 1);
 		v6 = result[5] >> 16;
-		result[3] = v5;
+		result[3] = (uint32_t)v5;
 		*v5 = v6;
 		v7 = result[5];
 		v8 = result[6] - 16;
@@ -1123,7 +1123,7 @@ int sub_57E4C0(uint32_t** this, unsigned int a2, int a3, unsigned int a4, unsign
 	sub_57E3F0(this, a2, a3);
 	if (a4 >= 8) {
 		if (a4 >= 0x26) {
-			v23 = &nxz_table_7[(a4 - 38) >> 5];
+			v23 = (unsigned char*)&nxz_table_7[(a4 - 38) >> 5];
 			v24 = nxz_table_7[(a4 - 38) >> 5].v1 + 4;
 			if ((int)--*v5[2] <= 0) {
 				sub_57E2C0(v5);
@@ -1180,7 +1180,7 @@ int sub_57E4C0(uint32_t** this, unsigned int a2, int a3, unsigned int a4, unsign
 			*(uint8_t*)v5[3] = (unsigned int)v5[5] >> 24;
 			v30 = v5[5];
 			v31 = (char*)v5[3] + 1;
-			v5[3] = v31;
+			v5[3] = (uint32_t*)v31;
 			*v31 = BYTE2(v30);
 			v32 = (int)(v5[6] - 4);
 			v33 = (uint32_t*)((uint32_t)v5[5] << 16);
@@ -1216,7 +1216,7 @@ LABEL_15:
 		*(uint8_t*)v5[3] = HIBYTE(v39);
 		v40 = v5[5];
 		v41 = (char*)v5[3] + 1;
-		v5[3] = v41;
+		v5[3] = (uint32_t*)v41;
 		*v41 = BYTE2(v40);
 		v42 = (int)(v5[6] - 4);
 		v43 = (uint32_t*)((uint32_t)v5[5] << 16);
@@ -1234,7 +1234,7 @@ LABEL_15:
 		*(uint8_t*)v5[3] = (unsigned int)v5[5] >> 24;
 		v51 = v5[5];
 		v52 = (char*)v5[3] + 1;
-		v5[3] = v52;
+		v5[3] = (uint32_t*)v52;
 		*v52 = BYTE2(v51);
 		v53 = (int)(v5[6] - 4);
 		result = (uint32_t)v5[5] << 16;
@@ -1248,7 +1248,7 @@ LABEL_15:
 //----- (0057D1C0) --------------------------------------------------------
 int nxz_compress(void* a1p, uint8_t* a2p, uint8_t* a3p, int a4p) {
 	void** this = a1p;
-	int a2 = a2p;
+	int a2 = (int)a2p;
 	unsigned char* a3 = a3p;
 	int a4 = a4p;
 	void** v4;           // ebx
