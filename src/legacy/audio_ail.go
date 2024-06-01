@@ -27,7 +27,11 @@ extern void* dword_587000_127004;
 extern uint32_t dword_5d4594_816092;
 extern uint32_t dword_5d4594_816364;
 extern uint32_t dword_5d4594_816376;
+extern uint32_t dword_5d4594_830864;
 extern uint32_t dword_5d4594_830872;
+extern uint32_t dword_5d4594_830972;
+extern uint32_t dword_5d4594_831076;
+extern uint32_t dword_5d4594_831084;
 extern uint32_t dword_5d4594_831088;
 extern uint32_t dword_5d4594_831092;
 extern uint32_t dword_587000_122856;
@@ -38,7 +42,6 @@ int sub_43D8E0();
 void sub_44D960();
 void sub_453050();
 int sub_451850(int a2, void* a3);
-int nox_xxx_WorkerHurt_44D810();
 extern void* dword_587000_122852;
 extern void* dword_587000_81128;
 extern void* dword_587000_93164;
@@ -49,6 +52,7 @@ import "C"
 import (
 	"unsafe"
 
+	"github.com/noxworld-dev/opennox/v1/common/memmap"
 	"github.com/noxworld-dev/opennox/v1/legacy/client/audio/ail"
 )
 
@@ -326,8 +330,27 @@ func Nox_xxx_parseSoundSetBin_424170(path string) int {
 	return int(C.nox_xxx_parseSoundSetBin_424170(internCStr(path)))
 }
 
-func Nox_xxx_WorkerHurt_44D810() {
-	C.nox_xxx_WorkerHurt_44D810()
+func Nox_xxx_WorkerHurt_44D810() int32 {
+	if C.dword_5d4594_831076 != 0 {
+		return 1
+	}
+	C.dword_5d4594_831092 = C.uint32_t(sub_43F130())
+	C.dword_587000_122848 = C.uint32_t(bool2int(C.dword_5d4594_831092 != 0))
+	ptr_830876 := memmap.PtrOff(0x5D4594, 830876)
+	Sub_4864A0(ptr_830876)
+	C.sub_486380((*C.uint32_t)(ptr_830876), 0x1F4 /* 500 */, 0, 0x4000)
+	C.dword_5d4594_830864 = 0
+	C.dword_5d4594_830972 = 0
+	C.dword_5d4594_830872 = 0
+	*memmap.PtrUint32(0x5D4594, 831080) = uint32(0) // This address looks unused
+	C.dword_5d4594_831084 = 0
+	C.dword_5d4594_831076 = 1
+
+	v, res := GetServer().S().Strings().GetVariantInFile("Con03B.scr:WorkerHurt", "C:\\NoxPost\\src\\client\\Audio\\AudDiag.c")
+	if res && v.Str2 != "" {
+		Nox_xxx_playDialogFile_44D900(v.Str2, 0)
+	}
+	return 1
 }
 
 func Sub_43D8E0() {
