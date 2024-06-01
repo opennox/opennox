@@ -26,6 +26,7 @@ src/cmake-build-*
 
 # For VS IDE
 .vs/
+.vscode/
 
 # Omit external libraries
 src/external
