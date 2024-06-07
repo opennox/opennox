@@ -4193,7 +4193,8 @@ int nox_xxx_tile_486060() {
 }
 
 //----- (004862E0) --------------------------------------------------------
-int sub_4862E0(int a3, int a4) {
+int sub_4862E0(timer* a3p, int a4) {
+	int a3 = (int)a3p;
 	*(uint32_t*)a3 = 0;
 	*(uint64_t*)(a3 + 24) = nox_platform_get_ticks();
 	sub_486380((uint32_t*)a3, 0x3E8u, 0, 0x4000);
@@ -4202,7 +4203,8 @@ int sub_4862E0(int a3, int a4) {
 }
 
 //----- (00486320) --------------------------------------------------------
-uint32_t* sub_486320(uint32_t* a1, int a2) {
+uint32_t* sub_486320(timer* a1p, int a2) {
+	uint32_t* a1 = a1p;
 	uint32_t* result; // eax
 
 	result = a1;
@@ -4212,7 +4214,7 @@ uint32_t* sub_486320(uint32_t* a1, int a2) {
 }
 
 //----- (00486350) --------------------------------------------------------
-int sub_486350(void* a1p, int a2) {
+int sub_486350(timer* a1p, int a2) {
 	int a1 = a1p;
 	long long v2; // rax
 	int v3;       // ecx
@@ -4229,7 +4231,8 @@ int sub_486350(void* a1p, int a2) {
 }
 
 //----- (00486380) --------------------------------------------------------
-int sub_486380(uint32_t* a1, unsigned int a2, int a3, int a4) {
+int sub_486380(timer* a1p, unsigned int a2, int a3, int a4) {
+	uint32_t* a1 = a1p;
 	int result; // eax
 
 	a1[4] = a2;
@@ -4240,7 +4243,8 @@ int sub_486380(uint32_t* a1, unsigned int a2, int a3, int a4) {
 }
 
 //----- (004863B0) --------------------------------------------------------
-int sub_4863B0(unsigned int* a2) {
+int sub_4863B0(timer* a2p) {
+	unsigned int* a2 = a2p;
 	signed int v1;          // ebx
 	unsigned int v2;        // eax
 	int result;             // eax
@@ -4314,7 +4318,8 @@ int sub_4863B0(unsigned int* a2) {
 }
 
 //----- (004864A0) --------------------------------------------------------
-uint32_t* sub_4864A0(uint32_t* a3) {
+uint32_t* sub_4864A0(timerGroup* a3p) {
+	uint32_t* a3 = a3p;
 	sub_4862E0((int)a3, 0x4000);
 	sub_4862E0((int)(a3 + 8), 100);
 	sub_4862E0((int)(a3 + 16), 0x2000);
@@ -4325,17 +4330,23 @@ uint32_t* sub_4864A0(uint32_t* a3) {
 }
 
 //----- (00486520) --------------------------------------------------------
-int sub_486520(unsigned int* a2) {
+int sub_486520(timerGroup* a2p) {
+	unsigned int* a2 = a2p;
 	sub_4863B0(a2);
 	sub_4863B0(a2 + 8);
 	return sub_4863B0(a2 + 16);
 }
 
 //----- (00486550) --------------------------------------------------------
-int sub_486550(uint8_t* a1) { return *a1 & 2 || a1[32] & 2 || a1[64] & 2; }
+int sub_486550(timerGroup* a1p) {
+	uint8_t* a1 = a1p;
+	return *a1 & 2 || a1[32] & 2 || a1[64] & 2;
+}
 
 //----- (00486570) --------------------------------------------------------
-int sub_486570(unsigned int* a1, uint32_t* a2) {
+int sub_486570(timerGroup* a1p, timerGroup* a2p) {
+	unsigned int* a1 = a1p;
+	uint32_t* a2 = a2p;
 	int v2; // eax
 
 	sub_486320(a1, ((a2[1] >> 16) * (a1[1] >> 16)) >> 14);
@@ -4357,7 +4368,8 @@ int sub_486570(unsigned int* a1, uint32_t* a2) {
 }
 
 //----- (00486620) --------------------------------------------------------
-uint32_t* sub_486620(uint32_t* a1) {
+uint32_t* sub_486620(timerGroup* a1p) {
+	uint32_t* a1 = a1p;
 	uint32_t* result; // eax
 
 	result = a1;

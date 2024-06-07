@@ -10,16 +10,13 @@ package legacy
 void sub_43E910(int a1);
 void sub_43E8E0(int a1);
 void sub_43D2D0();
-uint32_t* sub_486620(uint32_t* a1);
 void sub_43EDB0(HSAMPLE a1);
 int sub_43EE00(void* a1);
 int sub_43F060(uint32_t* a1);
 int sub_43F0E0(uint32_t* a1);
 void sub_44D5C0(int a1, int a2);
 char* sub_413890();
-uint32_t* sub_486320(uint32_t* a1, int a2);
 void sub_43D3C0(int a1, int a2);
-int sub_486350(void* a1, int a2);
 int sub_486640(void* a1, int a2);
 int nox_xxx_parseSoundSetBin_424170(char* a1);
 
@@ -271,7 +268,7 @@ func Sub_43D2D0() {
 }
 
 func Sub_486620(v unsafe.Pointer) {
-	C.sub_486620((*C.uint32_t)(v))
+	C.sub_486620((*C.timerGroup)(v))
 }
 
 func Sub_42EBB0(a1 int, a2 unsafe.Pointer, a3 int, a4 string) {
@@ -338,7 +335,7 @@ func Nox_xxx_WorkerHurt_44D810() int32 {
 	C.dword_587000_122848 = C.uint32_t(bool2int(C.dword_5d4594_831092 != 0))
 	ptr_830876 := memmap.PtrOff(0x5D4594, 830876)
 	Sub_4864A0(ptr_830876)
-	C.sub_486380((*C.uint32_t)(ptr_830876), 0x1F4 /* 500 */, 0, 0x4000)
+	C.sub_486380((*C.timer)(ptr_830876), 0x1F4 /* 500 */, 0, 0x4000)
 	C.dword_5d4594_830864 = 0
 	C.dword_5d4594_830972 = 0
 	C.dword_5d4594_830872 = 0
@@ -378,11 +375,11 @@ func Get_dword_5d4594_816376() ail.Driver {
 }
 
 func Sub_486320(p unsafe.Pointer, a2 int) {
-	C.sub_486320((*C.uint)(p), C.int(a2))
+	C.sub_486320((*C.timer)(p), C.int(a2))
 }
 
 func Sub_486350(p unsafe.Pointer, a2 int) {
-	C.sub_486350(p, C.int(a2))
+	C.sub_486350((*C.timer)(p), C.int(a2))
 }
 
 func Sub_43D3C0(s ail.Stream, a2 int) {
@@ -422,7 +419,7 @@ func Set_dword_587000_81128(v unsafe.Pointer) {
 }
 
 func Sub_4864A0(v unsafe.Pointer) {
-	C.sub_4864A0((*C.uint)(v))
+	C.sub_4864A0((*C.timerGroup)(v))
 }
 
 func Sub_451850(a1 unsafe.Pointer, a2 unsafe.Pointer) {
