@@ -1,5 +1,7 @@
 package legacy_test
 
+// DO NOT MERGE: This file should be replaced by https://github.com/noxworld-dev/opennox-lib/pull/6
+
 import (
 	"time"
 
