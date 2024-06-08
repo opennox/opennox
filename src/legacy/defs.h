@@ -1285,22 +1285,10 @@ _Static_assert(sizeof(noxSYSTEMTIME) == 16, "wrong size of SYSTEMTIME structure!
 
 void noxGetLocalTime(noxSYSTEMTIME* lpSystemTime);
 
-typedef struct timer {
-	uint32_t flags; // 0, Seems only 2 bits are used to toggle something
-	// used together with 8. In sub_4863B0, it interpolates to field_8
-	// it should be always in a range of 0~0x4000 (inclusive)
-	uint32_t current; // 4, 
-	// it should be always in a range of 0~0x4000 (inclusive)
-	uint32_t target; // 8, used together with 4
-	uint32_t delta_per_tick; // 12, how fast it move per 1 tick
-	uint64_t max_tick_delta; // 16, Some kind of maximum delta it can allow. Most cases it was 1000, for workerhunt it's 500
-	uint64_t last_updated; // 24, usually has tick when a function called
-} timer;
-_Static_assert(sizeof(timer) == 32, "wrong size of timer structure!");
+// See timer.go for definition
+typedef struct timer timer;
 
-typedef struct timerGroup {
-	timer value[3];
-} timerGroup;
-_Static_assert(sizeof(timerGroup) == 96, "wrong size of timerGroup structure!");
+// See timer.go for definition
+typedef struct timerGroup timerGroup;
 
 #endif // NOX_DEFS_H

@@ -80,7 +80,7 @@ func sub_43E940(a1 unsafe.Pointer) int {
 	audioTimer93944 = ail.RegisterTimer(func(u uint32) {
 		sub_486EF0()
 		legacy.Sub_43D2D0()
-		legacy.Sub_486620(legacy.Get_dword_587000_127004())
+		legacy.Sub_486620((*legacy.TimerGroup)(legacy.Get_dword_587000_127004()))
 	})
 	if audioTimer93944 == math.MaxUint32 {
 		return -2147221504 // 0x80040000

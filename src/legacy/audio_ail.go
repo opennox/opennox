@@ -267,8 +267,8 @@ func Sub_43D2D0() {
 	C.sub_43D2D0()
 }
 
-func Sub_486620(v unsafe.Pointer) {
-	C.sub_486620((*C.timerGroup)(v))
+func Sub_486620(v *TimerGroup) {
+	C.sub_486620((*C.timerGroup)(unsafe.Pointer(v)))
 }
 
 func Sub_42EBB0(a1 int, a2 unsafe.Pointer, a3 int, a4 string) {
