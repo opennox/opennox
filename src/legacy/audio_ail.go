@@ -333,9 +333,9 @@ func Nox_xxx_WorkerHurt_44D810() int32 {
 	}
 	C.dword_5d4594_831092 = C.uint32_t(sub_43F130())
 	C.dword_587000_122848 = C.uint32_t(bool2int(C.dword_5d4594_831092 != 0))
-	ptr_830876 := memmap.PtrOff(0x5D4594, 830876)
-	Sub_4864A0(ptr_830876)
-	C.sub_486380((*C.timer)(ptr_830876), 0x1F4 /* 500 */, 0, 0x4000)
+	ptr_830876 := (*TimerGroup)(memmap.PtrOff(0x5D4594, 830876))
+	TimerGroupInit(ptr_830876)
+	TimerSetParams(&ptr_830876.Timers[0], 0x1F4 /* 500 */, 0x4000)
 	C.dword_5d4594_830864 = 0
 	C.dword_5d4594_830972 = 0
 	C.dword_5d4594_830872 = 0
