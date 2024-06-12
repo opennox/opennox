@@ -231,6 +231,8 @@ github.com/noxworld-dev/noxscript/ns/v4 v4.19.0 h1:a/JEttpJkP345bL9JOV1MSWVwxuRy
 github.com/noxworld-dev/noxscript/ns/v4 v4.19.0/go.mod h1:sumxNbzs331R1Ohkxf4uOKE7oZsXYmcltRdP/mz8YJs=
 github.com/noxworld-dev/opennox-lib v0.0.0-20240218161328-67a1e62212ed h1:ZGn0IkQbS42zPiLIv1+ZwlIhmfF618rq5iCMzBY0l4U=
 github.com/noxworld-dev/opennox-lib v0.0.0-20240218161328-67a1e62212ed/go.mod h1:JBIs5Pqplyg77EwvNIURCzIwckkQisakw82WWAEf2U4=
+github.com/noxworld-dev/opennox-lib v0.0.0-20240610100101-738fab12825b h1:wexIjkT9+ox/dUstYNXmxWDvqsdeBdDLWeFjtKeYMJ0=
+github.com/noxworld-dev/opennox-lib v0.0.0-20240610100101-738fab12825b/go.mod h1:JBIs5Pqplyg77EwvNIURCzIwckkQisakw82WWAEf2U4=
 github.com/noxworld-dev/vqa-decode v0.0.0-20220408200150-8bbbe7a064f7 h1:RHk168W1N0o4FAcp2RIeNl5pzSeioH94OSL5cn2DV+4=
 github.com/noxworld-dev/vqa-decode v0.0.0-20220408200150-8bbbe7a064f7/go.mod h1:L/NIDfAyZ3NbYIxPZ6onoSGKxJmcc9+pdJcTIrDPUag=
 github.com/noxworld-dev/xwis v0.0.0-20220204182326-c5d2fc18e75e h1:yMghTqz2j8k79+JVaSs/DOvTmgGVwGNGNvCchYP9Hcw=

@@ -2,15 +2,21 @@ package legacy_test
 
 import (
 	"testing"
+	"time"
 
+	"github.com/noxworld-dev/opennox-lib/noxtest"
 	"github.com/noxworld-dev/opennox-lib/platform"
 	"github.com/noxworld-dev/opennox/v1/legacy"
 	"github.com/stretchr/testify/require"
 )
 
+func platformTicks() uint64 {
+	return uint64(platform.Ticks() / time.Millisecond)
+}
+
 func TestInterpolation(t *testing.T) {
 	legacy.PlatformTicks = platformTicks
-	p := TestPlatform{}
+	p := noxtest.MockPlatform{}
 	platform.Set(&p)
 
 	timer := &legacy.Timer{}
@@ -55,7 +61,7 @@ func TestInterpolation(t *testing.T) {
 		LastUpdated:  10,
 	}, *timer)
 
-	platform.Sleep(11000000)
+	platform.Sleep(900000)
 	require.Equal(t, uint64(11), platformTicks())
 
 	legacy.TimerUpdate(timer)
@@ -78,7 +84,7 @@ func TestInterpolation(t *testing.T) {
 		LastUpdated:  11,
 	}, *timer)
 
-	platform.Sleep(13000000)
+	platform.Sleep(2000000)
 	require.Equal(t, uint64(13), platformTicks())
 
 	legacy.TimerUpdate(timer)
@@ -94,7 +100,7 @@ func TestInterpolation(t *testing.T) {
 
 func TestRawSet(t *testing.T) {
 	legacy.PlatformTicks = platformTicks
-	p := TestPlatform{}
+	p := noxtest.MockPlatform{}
 	platform.Set(&p)
 
 	timer := &legacy.Timer{}
@@ -144,7 +150,7 @@ func TestRawSet(t *testing.T) {
 
 func TestSetParams(t *testing.T) {
 	legacy.PlatformTicks = platformTicks
-	p := TestPlatform{}
+	p := noxtest.MockPlatform{}
 	platform.Set(&p)
 
 	timer := &legacy.Timer{}
@@ -182,7 +188,7 @@ func TestSetParams(t *testing.T) {
 		LastUpdated:  1,
 	}, *timer)
 
-	platform.Sleep(10100000)
+	platform.Sleep(9000000)
 	require.Equal(t, uint64(10), platformTicks())
 	legacy.TimerUpdate(timer)
 	require.Equal(t, legacy.Timer{
@@ -194,7 +200,7 @@ func TestSetParams(t *testing.T) {
 		LastUpdated:  10,
 	}, *timer)
 
-	platform.Sleep(1000100000)
+	platform.Sleep(990100000)
 	require.Equal(t, uint64(1000), platformTicks())
 	legacy.TimerUpdate(timer)
 	require.Equal(t, legacy.Timer{
