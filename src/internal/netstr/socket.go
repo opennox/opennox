@@ -54,7 +54,7 @@ func listen(log *log.Logger, addr netip.AddrPort) (net.PacketConn, error) {
 	return l, nil
 }
 
-func readFrom(debug bool, pc net.PacketConn) ([]byte, netip.AddrPort, error) {
+func readFrom(debug bool, log *log.Logger, pc net.PacketConn) ([]byte, netip.AddrPort, error) {
 	const buflen = 65535
 	buf := make([]byte, buflen)
 
