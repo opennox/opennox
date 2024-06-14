@@ -31,12 +31,14 @@ func WaitForLobbyResults(conn net.PacketConn, srvAddr netip.Addr, flag RecvFlags
 	} else {
 		argp = 1
 	}
-
+	buf := make([]byte, 256)
 	for {
-		buf, from, err := readFrom(DebugSockets, Log, conn)
+		buf = buf[:cap(buf)]
+		n, from, err := readFrom(DebugSockets, Log, conn, buf)
 		if err != nil {
 			return 0, err
 		}
+		buf = buf[:n]
 		op := noxnet.Op(buf[2])
 		if op < code32 {
 			if op == codeInfo13 || srvAddr == from.Addr() {
@@ -61,13 +63,13 @@ func WaitForLobbyResults(conn net.PacketConn, srvAddr netip.Addr, flag RecvFlags
 			}
 		}
 		if flag&RecvCanRead == 0 || (flag&RecvJustOne) != 0 {
-			return len(buf), nil
+			return n, nil
 		}
 		argp, err = canReadConn(DebugSockets, Log, conn)
 		if err != nil {
-			return len(buf), err
+			return n, err
 		} else if argp == 0 {
-			return len(buf), nil
+			return n, nil
 		}
 	}
 }
