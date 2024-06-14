@@ -349,11 +349,11 @@ func netCrypt(key byte, p []byte) {
 }
 
 func (g *Streams) recvRoot(dst *bytes.Buffer, pc net.PacketConn) (int, netip.AddrPort) {
-	var buf [1024]byte // TODO: get rid of this buffer
-	n, src, err := g.recvRaw(pc, buf[:])
+	buf, src, err := g.recvRaw(pc)
+
 	if err == nil && g.Xor {
 		if ns := g.connByAddr(src); ns != nil && ns.xorKey != 0 {
-			netCrypt(ns.xorKey, buf[:n])
+			netCrypt(ns.xorKey, buf)
 		}
 	}
 	if !g.IsHost() && g.PacketDrop > 0 {
@@ -361,20 +361,20 @@ func (g *Streams) recvRoot(dst *bytes.Buffer, pc net.PacketConn) (int, netip.Add
 			return 0, src
 		}
 	}
-	dst.Write(buf[:n])
-	return n, src
+	dst.Write(buf)
+	return len(buf), src
 }
 
-func (g *Streams) recvRaw(pc net.PacketConn, buf []byte) (int, netip.AddrPort, error) {
-	n, src, err := readFrom(g.Debug, g.Log, pc, buf)
+func (g *Streams) recvRaw(pc net.PacketConn) ([]byte, netip.AddrPort, error) {
+	buf, src, err := readFrom(g.Debug, g.Log, pc)
 	if err != nil {
-		return n, src, err
+		return buf, src, err
 	}
-	if n >= 2 && binary.LittleEndian.Uint16(buf[:2]) == 0xF13A { // extension packet code
+	if len(buf) >= 2 && binary.LittleEndian.Uint16(buf[:2]) == 0xF13A { // extension packet code
 		g.OnExtPacket(pc, buf, src)
-		return 0, src, nil
+		return buf[:0], src, nil
 	}
-	return n, src, nil
+	return buf, src, nil
 }
 
 func (g *Streams) processPong(out []byte, packet []byte, from netip.AddrPort) int {
