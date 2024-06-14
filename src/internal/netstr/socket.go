@@ -54,20 +54,21 @@ func listen(log *log.Logger, addr netip.AddrPort) (net.PacketConn, error) {
 	return l, nil
 }
 
-func readFrom(debug bool, log *log.Logger, pc net.PacketConn) ([]byte, netip.AddrPort, error) {
+func readFrom(debug bool, pc net.PacketConn) ([]byte, netip.AddrPort, error) {
 	const buflen = 65535
 	buf := make([]byte, buflen)
 
 	n, src, err := pc.ReadFrom(buf)
+	buf = buf[:n]
 	ap := GetAddr(src)
 	if err != nil {
 		Log.Println(err)
 		return buf, ap, err
 	}
 	if debug {
-		log.Printf("recv %s -> %s [%d]\n%x", ap, pc.LocalAddr(), n, buf[:n])
+		log.Printf("recv %s -> %s [%d]\n%x", ap, pc.LocalAddr(), n, buf)
 	}
-	return buf[:n], ap, nil
+	return buf, ap, nil
 }
 
 func WriteTo(pc net.PacketConn, buf []byte, addr netip.AddrPort) (int, error) {
