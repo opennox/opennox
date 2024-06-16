@@ -1,0 +1,126 @@
+name: Build and release (Win7-compat)
+on:
+  workflow_dispatch: # run only manually
+
+env:
+  DOCKER_IMAGE_NAME: ghcr.io/noxworld-dev/opennox
+
+jobs:
+  hybrid_docker_mingw_win7:
+    # Cross compile Windows binaries with mingw on ArchLinux-based Linux environment
+    name: Cross compile for Windows (Win7-compat)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Get go cache
+        uses: actions/cache@v3
+        with:
+          path: gocache
+          key: mingw-gocache-v3-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            mingw-gocache-v3-
+
+      - name: Change go toolchain version to 1.21.4
+        run: |
+          sed -i 's/^toolchain\s.*$/toolchain go1.21.4/g' ${GITHUB_WORKSPACE}/src/go.mod
+
+      - uses: docker://ghcr.io/noxworld-dev/docker-build:latest-win
+        name: Docker build
+
+      - uses: actions/upload-artifact@v3
+        name: Upload artifacts
+        if: startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/dev') || (github.ref == 'refs/heads/ci_tests')
+        with:
+          name: opennox-win7-compat
+          path: |
+            build/opennox.exe
+            build/opennox-hd.exe
+            build/opennox-debug.exe
+            build/opennox-debug-hd.exe
+            build/opennox-server.exe
+            build/*.dll
+          if-no-files-found: error
+          retention-days: 1
+
+  release_repackage_win7:
+      name: Repackage Windows release (Win7-compat)
+      runs-on: ubuntu-latest
+      if: startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/ci_tests')
+      needs: hybrid_docker_mingw_win7
+      steps:
+        - name: Install NSIS
+          run: sudo apt-get install -y nsis
+
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+            submodules: true
+
+        - name: Cleanup
+          run: |
+            rm -rf /tmp/win-tmp
+            mkdir -p /tmp/win-tmp
+
+        - uses: actions/download-artifact@v3
+          with:
+            name: opennox-win7-compat
+            path: /tmp/win-tmp/
+
+        - name: Repackage release
+          run: |
+            ls -lh /tmp/win-tmp/
+            rm -rf /tmp/opennox-win
+            mkdir -p /tmp/opennox-win
+            cp /tmp/win-tmp/*.exe /tmp/opennox-win/
+            cp /tmp/win-tmp/*.dll /tmp/opennox-win/
+            cp ./CHANGELOG.md /tmp/opennox-win/
+
+            rm -rf /tmp/opennox-win-release
+            mkdir -p /tmp/opennox-win-release
+            export VERSION=$(git name-rev --tags --name-only $(git rev-parse HEAD))
+            makensis -DVERSION="$VERSION" -DDATA="/tmp/opennox-win/" -DOUTDIR="/tmp/opennox-win-release/" ./scripts/opennox.nsi
+
+            cd /tmp/opennox-win
+            zip -9 -r /tmp/opennox-win-release/OpenNox-$VERSION.zip ./*
+
+        - name: Upload the archive
+          uses: actions/upload-artifact@v3
+          with:
+            name: opennox-release-win7-compat
+            path: |
+              /tmp/opennox-win-release/OpenNox-*.zip
+              /tmp/opennox-win-release/OpenNox-*.exe
+            if-no-files-found: error
+
+  github_release_win7:
+    name: Github release (Win7-compat)
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: release_repackage_win7
+    steps:
+      - name: Cleanup
+        run: |
+          rm -rf /tmp/release-tmp
+          mkdir -p /tmp/release-tmp
+
+      - uses: actions/download-artifact@v3
+        name: Preparing Windows (NSIS installer, Zip archive) files for release.
+        with:
+          name: opennox-release-win7-compat
+          path: /tmp/release-tmp/
+
+      - name: Releasing prepared files.
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            TODO: changelog
+          draft: true
+          fail_on_unmatched_files: true
+          files: |
+            /tmp/release-tmp/OpenNox-*.zip
+            /tmp/release-tmp/OpenNox-*.exe
