@@ -50,6 +50,7 @@
 #include "common__magic__speltree.h"
 #include "input_common.h"
 
+extern uint32_t dword_587000_93160;
 extern uint32_t dword_8531A0_2576;
 extern uint32_t dword_5d4594_1046852;
 extern uint32_t dword_5d4594_1045576;
@@ -225,7 +226,7 @@ void sub_44D3A0() {
 		if (dword_5d4594_830872 && dword_587000_122848) {
 			if (!sub_44D660(*(const char**)&dword_5d4594_830872)) {
 				dword_5d4594_830872 = 0;
-			} else if (!dword_587000_122856 || !*getMemU32Ptr(0x587000, 93160) || dword_5d4594_831084) {
+			} else if (!dword_587000_122856 || !dword_587000_93160 || dword_5d4594_831084) {
 				dword_5d4594_830864 = 2;
 			} else {
 				dword_5d4594_831084 = 1;

@@ -134,6 +134,7 @@ extern uint32_t dword_5d4594_1046924;
 extern uint32_t nox_xxx_polygonNextAngle_587000_60356;
 extern uint32_t dword_5d4594_1307716;
 extern uint32_t dword_587000_93156;
+extern uint32_t dword_587000_93160;
 extern uint32_t dword_5d4594_2523780;
 extern uint32_t dword_5d4594_2650676;
 extern uint32_t dword_5d4594_1321252;
@@ -881,6 +882,12 @@ func Get_dword_5d4594_816340() int {
 }
 func Get_dword_587000_93156() int {
 	return int(C.dword_587000_93156)
+}
+func Get_dword_587000_93160() int {
+	return int(C.dword_587000_93160)
+}
+func Set_dword_587000_93160(v int) {
+	C.dword_587000_93160 = C.uint(v)
 }
 func Get_dword_5d4594_816348() int {
 	return int(C.dword_5d4594_816348)

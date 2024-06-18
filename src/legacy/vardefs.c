@@ -137,6 +137,7 @@ uint32_t dword_5d4594_1046924 = 0;
 uint32_t nox_xxx_polygonNextAngle_587000_60356 = 0x1;
 uint32_t dword_5d4594_1307716 = 0;
 uint32_t dword_587000_93156 = 0x1;
+uint32_t dword_587000_93160 = 0x1;
 uint32_t dword_5d4594_2523780 = 0;
 uint32_t dword_5d4594_2650676 = 0;
 uint32_t dword_5d4594_1321252 = 0;

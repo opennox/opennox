@@ -249,7 +249,7 @@ func nox_xxx_musicStartPlay_43D6C0(a1p unsafe.Pointer) int {
 	}
 	aname := audioTable[ind]
 	sub_43D650()
-	*memmap.PtrUint32(0x587000, 93160) = 0
+	legacy.Set_dword_587000_93160(0)
 	path := filepath.Join("music", aname)
 	if !strings.Contains(path, ".") {
 		path += ".wav"
@@ -263,7 +263,7 @@ func nox_xxx_musicStartPlay_43D6C0(a1p unsafe.Pointer) int {
 		if v5 == "" {
 			return 0
 		}
-		*memmap.PtrUint32(0x587000, 93160) = 1
+		legacy.Set_dword_587000_93160(1)
 		path2 := filepath.Join(v5, path)
 		s = legacy.Get_dword_5d4594_816376().OpenStream(path2, 204800)
 		if s == 0 {
