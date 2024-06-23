@@ -491,7 +491,7 @@ func videoUpdateGameMode(mode image.Point) {
 }
 
 func sub_4AA9C0() int {
-	sub_44D8F0()
+	legacy.Sub_44D8F0()
 	if !env.IsE2E() {
 		videoUpdateGameMode(guiOptionsRes)
 	}
@@ -547,7 +547,7 @@ func sub_4311B0() {
 
 func sub_4312B0() {
 	legacy.Sub_431290()
-	sub_44D8F0()
+	legacy.Sub_44D8F0()
 	legacy.Sub_43D990()
 }
 

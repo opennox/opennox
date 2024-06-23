@@ -277,7 +277,6 @@ func init() {
 	legacy.Sub_450580 = sub_450580
 	legacy.Sub_4DB170 = sub_4DB170
 	legacy.Nox_setSaveFileName_4DB130 = setSaveFileName
-	legacy.Sub_44D8F0 = sub_44D8F0
 	legacy.Nox_xxx_harpoonBreakForPlr_537520 = nox_xxx_harpoonBreakForPlr_537520
 	legacy.Nox_xxx_collideHarpoon_4EB6A0 = nox_xxx_collideHarpoon_4EB6A0
 	legacy.Nox_xxx_updateHarpoon_54F380 = nox_xxx_updateHarpoon_54F380

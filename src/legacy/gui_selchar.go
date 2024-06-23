@@ -38,7 +38,6 @@ var (
 	Nox_savegame_sub_46D580                func()
 	Sub_450580                             func()
 	Sub_4DB170                             func(a1 bool, a2 unsafe.Pointer, a3 int)
-	Sub_44D8F0                             func()
 )
 
 var _ = [1]struct{}{}[1277-unsafe.Offsetof(Nox_savegame_xxx{}.Stage)]
@@ -113,8 +112,6 @@ func sub_450580() { Sub_450580() }
 //export sub_4DB170
 func sub_4DB170(a1 int, a2 unsafe.Pointer, a3 int) { Sub_4DB170(a1 != 0, a2, a3) }
 
-//export sub_44D8F0
-func sub_44D8F0() { Sub_44D8F0() }
 func Sub_41E470() {
 	C.sub_41E470()
 }

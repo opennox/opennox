@@ -28,8 +28,8 @@ func (c *Client) DrawGeneral(a1 bool) error {
 	}
 	legacy.Sub_431290()
 	legacy.Sub_43DBD0()
-	sub_44D8F0()
-	for legacy.Sub_43DC40() != 0 || sub_44D930() {
+	legacy.Sub_44D8F0()
+	for legacy.Sub_43DC40() != 0 || legacy.Sub_44D930() {
 		c.sub4312C0()
 	}
 	v12 := sub_48B3E0(false)

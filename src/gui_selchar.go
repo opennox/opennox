@@ -988,7 +988,7 @@ func sub_43DDA0() {
 }
 
 func sub_450580() {
-	sub_44D8F0()
+	legacy.Sub_44D8F0()
 	*memmap.PtrUint32(0x5D4594, 832488) = 1
 	legacy.Set_dword_5d4594_831224(0)
 	*memmap.PtrUint32(0x5D4594, 831292) = 0
@@ -1008,11 +1008,6 @@ func sub_4DB170(a1 bool, a2 unsafe.Pointer, a3 int) {
 
 func sub_4DCBD0(a1 int) {
 	*memmap.PtrUint32(0x5D4594, 1563076) = uint32(a1)
-}
-
-func sub_44D8F0() {
-	legacy.Set_dword_5d4594_830872(0)
-	legacy.Set_dword_5d4594_830972(0)
 }
 
 func sub_46CCB0() {

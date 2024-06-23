@@ -313,7 +313,7 @@ func guiCloseNPCDialog() {
 	sub.Func94(gui.AsWindowEvent(0x400F, 0, 0))
 	legacy.Nox_xxx_wnd_46ABB0(root, 0)
 	root.SetHidden(true)
-	sub_44D8F0()
+	legacy.Sub_44D8F0()
 	legacy.Set_dword_5d4594_1123520(0)
 	if !nox_client_renderGUI_80828 && memmap.Uint32(0x587000, 153436) == 1 {
 		nox_client_renderGUI_80828 = true

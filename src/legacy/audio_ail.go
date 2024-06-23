@@ -24,15 +24,8 @@ extern void* dword_587000_127004;
 extern uint32_t dword_5d4594_816092;
 extern uint32_t dword_5d4594_816364;
 extern uint32_t dword_5d4594_816376;
-extern uint32_t dword_5d4594_830864;
-extern uint32_t dword_5d4594_830872;
-extern uint32_t dword_5d4594_830972;
-extern uint32_t dword_5d4594_831076;
 extern uint32_t dword_5d4594_831084;
-extern uint32_t dword_5d4594_831088;
 extern uint32_t dword_5d4594_831092;
-extern uint32_t dword_587000_122856;
-extern uint32_t dword_587000_122848;
 
 void sub_43DC00();
 int sub_43D8E0();
@@ -49,7 +42,6 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/noxworld-dev/opennox/v1/common/memmap"
 	"github.com/noxworld-dev/opennox/v1/legacy/client/audio/ail"
 )
 
@@ -311,43 +303,12 @@ func Set_dword_5d4594_816092(v int) {
 	C.dword_5d4594_816092 = C.uint(v)
 }
 
-func Get_dword_5d4594_831088() ail.Stream {
-	return ail.Stream(C.dword_5d4594_831088)
-}
-
-func Set_dword_5d4594_831088(v ail.Stream) {
-	C.dword_5d4594_831088 = C.uint(v)
-}
-
 func Sub_413890() string {
 	return GoString(C.sub_413890())
 }
 
 func Nox_xxx_parseSoundSetBin_424170(path string) int {
 	return int(C.nox_xxx_parseSoundSetBin_424170(internCStr(path)))
-}
-
-func Nox_xxx_WorkerHurt_44D810() int32 {
-	if C.dword_5d4594_831076 != 0 {
-		return 1
-	}
-	C.dword_5d4594_831092 = C.uint32_t(sub_43F130())
-	C.dword_587000_122848 = C.uint32_t(bool2int(C.dword_5d4594_831092 != 0))
-	ptr_830876 := (*TimerGroup)(memmap.PtrOff(0x5D4594, 830876))
-	TimerGroupInit(ptr_830876)
-	TimerSetParams(&ptr_830876.Timers[0], 0x1F4 /* 500 */, 0x4000)
-	C.dword_5d4594_830864 = 0
-	C.dword_5d4594_830972 = 0
-	C.dword_5d4594_830872 = 0
-	*memmap.PtrUint32(0x5D4594, 831080) = uint32(0) // This address looks unused
-	C.dword_5d4594_831084 = 0
-	C.dword_5d4594_831076 = 1
-
-	v, res := GetServer().S().Strings().GetVariantInFile("Con03B.scr:WorkerHurt", "C:\\NoxPost\\src\\client\\Audio\\AudDiag.c")
-	if res && v.Str2 != "" {
-		Nox_xxx_playDialogFile_44D900(v.Str2, 0)
-	}
-	return 1
 }
 
 func Sub_43D8E0() {
@@ -384,22 +345,6 @@ func Sub_486350(p unsafe.Pointer, a2 int) {
 
 func Sub_43D3C0(s ail.Stream, a2 int) {
 	C.sub_43D3C0(C.int(s), C.int(a2))
-}
-
-func Get_dword_587000_122856() int {
-	return int(C.dword_587000_122856)
-}
-
-func Get_dword_587000_122848() int {
-	return int(C.dword_587000_122848)
-}
-
-func Get_dword_5d4594_830872() int {
-	return int(C.dword_5d4594_830872)
-}
-
-func Set_dword_587000_122856(v int) {
-	C.dword_587000_122856 = C.uint(v)
 }
 
 func Sub_486640(a1 unsafe.Pointer, a2 int) int {

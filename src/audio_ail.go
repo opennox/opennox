@@ -256,7 +256,7 @@ func nox_xxx_musicStartPlay_43D6C0(a1p unsafe.Pointer) int {
 	}
 	s := legacy.Get_dword_5d4594_816376().OpenStream(path, 204800)
 	if s == 0 {
-		if legacy.Get_dword_587000_122856() != 0 && sub_44D930() {
+		if legacy.Get_dword_587000_122856() != 0 && legacy.Sub_44D930() {
 			return 0
 		}
 		v5 := legacy.Sub_413890()
@@ -282,13 +282,6 @@ func nox_xxx_musicStartPlay_43D6C0(a1p unsafe.Pointer) int {
 	a1[2] = 0
 	legacy.Set_dword_5d4594_816364(s)
 	return 1
-}
-
-func sub_44D930() bool {
-	if legacy.Get_dword_587000_122848() == 0 {
-		return false
-	}
-	return legacy.Get_dword_5d4594_830872() != 0 || legacy.Get_dword_5d4594_831088() != 0
 }
 
 func sub_44D660(name string) bool {

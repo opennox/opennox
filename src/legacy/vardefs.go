@@ -212,7 +212,6 @@ extern uint32_t dword_5d4594_1046516;
 extern uint32_t dword_5d4594_2487532;
 extern uint32_t nox_server_connectionType_3596;
 extern void* nox_monsterBin_head_2386924;
-extern uint32_t dword_5d4594_830872;
 extern uint32_t dword_5d4594_1200804;
 extern uint32_t dword_5d4594_1049484;
 extern uint32_t dword_5d4594_1321216;
@@ -263,7 +262,6 @@ extern uint32_t dword_5d4594_1320932;
 extern uint32_t dword_5d4594_1197332;
 extern uint32_t dword_5d4594_1319056;
 extern uint32_t dword_5d4594_1047528;
-extern uint32_t dword_5d4594_830864;
 extern uint32_t dword_5d4594_608316;
 extern uint32_t dword_5d4594_1046948;
 extern uint32_t dword_5d4594_1046528;
@@ -328,7 +326,6 @@ extern uint32_t dword_5d4594_2487624;
 extern uint32_t dword_5d4594_1309832;
 extern uint32_t dword_5d4594_2487576;
 extern uint32_t dword_5d4594_1309756;
-extern uint32_t dword_5d4594_831084;
 extern uint32_t dword_5d4594_1309736;
 extern uint32_t nox_client_gui_flag_1556112;
 extern uint32_t dword_5d4594_1301812;
@@ -381,7 +378,6 @@ extern uint32_t dword_5d4594_814992;
 extern uint32_t dword_587000_66116;
 extern uint32_t dword_5d4594_2487564;
 extern uint32_t dword_5d4594_3804684;
-extern uint32_t dword_5d4594_830972;
 extern uint32_t dword_5d4594_1308120;
 extern uint32_t dword_5d4594_2488608;
 extern uint32_t dword_5d4594_1568868;
@@ -702,8 +698,6 @@ extern void* dword_5d4594_830236;
 extern unsigned int dword_5d4594_831220;
 extern uint32_t dword_5d4594_831260;
 extern uint32_t dword_5d4594_1563096;
-extern uint32_t dword_5d4594_830872;
-extern uint32_t dword_5d4594_830972;
 extern uint32_t dword_5d4594_831224;
 extern unsigned int dword_5d4594_251744;
 extern unsigned int nox_game_createOrJoin_815048;
@@ -1206,12 +1200,6 @@ func Set_dword_5d4594_831224(v int) {
 }
 func Set_dword_5d4594_1563096(v int) {
 	C.dword_5d4594_1563096 = C.uint(v)
-}
-func Set_dword_5d4594_830872(v int) {
-	C.dword_5d4594_830872 = C.uint(v)
-}
-func Set_dword_5d4594_830972(v int) {
-	C.dword_5d4594_830972 = C.uint(v)
 }
 func Set_nox_win_width(v int) {
 	C.nox_win_width = C.int(v)
