@@ -26,33 +26,33 @@ import (
 )
 
 type Dialog struct {
-	IsEnabled     *uint32     // dword_587000_122848 - Whether dialog component is enabled.
-	Volume        *uint32     // dword_5d4594_830868 - stores volume level of dialog at 0-100 range
-	FileToRead    **C.char    // dword_5d4594_830872
-	PlayingFile   **C.char    // dword_5d4594_830972
-	CurrentStream *ail.Stream // dword_5d4594_831088 - Stores a dialog stream currently playing
-	State         *uint32     // dword_5d4594_830864 - Internal state of dialog component
-	SomeFlag      *uint32     // dword_5d4594_831084 - Internal state being toggled when loading failed?
-	FallbackMode  *uint32     // dword_587000_122856 - Initially true, becomes false after first dialog read success
-	Initialized   *uint32     // dword_5d4594_831076
+	isEnabled          *uint32     // dword_587000_122848 - Whether dialog component is enabled.
+	volume             *uint32     // dword_5d4594_830868 - stores volume level of dialog at 0-100 range
+	fileToRead         **C.char    // dword_5d4594_830872
+	currentPlayingFile **C.char    // dword_5d4594_830972
+	currentStream      *ail.Stream // dword_5d4594_831088 - Stores a dialog stream currently playing
+	state              *uint32     // dword_5d4594_830864 - Internal state of dialog component
+	someFlag           *uint32     // dword_5d4594_831084 - Internal state being toggled when loading failed?
+	isFallbackMode     *uint32     // dword_587000_122856 - Initially true, becomes false after first dialog read success
+	isInitialized      *uint32     // dword_5d4594_831076
 }
 
 func (d *Dialog) GoString() string {
-	return fmt.Sprintf("Dialog{IsEnabled: %v, Volume: %v, FileToRead: %v, PlayingFile: %v, CurrentStream: %v, State: %v, SomeFlag: %v, FallbackMode: %v, Initialized: %v}",
-		*d.IsEnabled, *d.Volume, C.GoString(*d.FileToRead), C.GoString(*d.PlayingFile), *d.CurrentStream, *d.State, *d.SomeFlag, *d.FallbackMode, *d.Initialized)
+	return fmt.Sprintf("Dialog{isEnabled: %v, volume: %v, fileToRead: %v, currentPlayingFile: %v, currentStream: %v, state: %v, someFlag: %v, isFallbackMode: %v, isInitialized: %v}",
+		*d.isEnabled, *d.volume, C.GoString(*d.fileToRead), C.GoString(*d.currentPlayingFile), *d.currentStream, *d.state, *d.someFlag, *d.isFallbackMode, *d.isInitialized)
 }
 
 func DialogInit() *Dialog {
 	return &Dialog{
-		IsEnabled:     (*uint32)(&C.dword_587000_122848),
-		Volume:        memmap.PtrUint32(0x5D4594, 830868),
-		FileToRead:    (**C.char)((unsafe.Pointer)(&C.dword_5d4594_830872)),
-		PlayingFile:   (**C.char)((unsafe.Pointer)(&C.dword_5d4594_830972)),
-		CurrentStream: (*ail.Stream)((unsafe.Pointer)(&C.dword_5d4594_831088)),
-		State:         (*uint32)(&C.dword_5d4594_830864),
-		SomeFlag:      (*uint32)(&C.dword_5d4594_831084),
-		FallbackMode:  (*uint32)(&C.dword_587000_122856),
-		Initialized:   (*uint32)(&C.dword_5d4594_831076),
+		isEnabled:          (*uint32)(&C.dword_587000_122848),
+		volume:             memmap.PtrUint32(0x5D4594, 830868),
+		fileToRead:         (**C.char)((unsafe.Pointer)(&C.dword_5d4594_830872)),
+		currentPlayingFile: (**C.char)((unsafe.Pointer)(&C.dword_5d4594_830972)),
+		currentStream:      (*ail.Stream)((unsafe.Pointer)(&C.dword_5d4594_831088)),
+		state:              (*uint32)(&C.dword_5d4594_830864),
+		someFlag:           (*uint32)(&C.dword_5d4594_831084),
+		isFallbackMode:     (*uint32)(&C.dword_587000_122856),
+		isInitialized:      (*uint32)(&C.dword_5d4594_831076),
 	}
 }
 
