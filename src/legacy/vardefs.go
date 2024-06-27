@@ -835,9 +835,6 @@ func Get_dword_5d4594_528252() int {
 func Get_dword_5d4594_528260() int {
 	return int(C.dword_5d4594_528260)
 }
-func Get_dword_587000_122852() unsafe.Pointer {
-	return C.dword_587000_122852
-}
 func Get_dword_587000_93164() unsafe.Pointer {
 	return C.dword_587000_93164
 }

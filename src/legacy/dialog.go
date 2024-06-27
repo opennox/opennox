@@ -133,3 +133,7 @@ func Sub_44D8F0() {
 
 //export sub_44D8F0
 func sub_44D8F0() { Sub_44D8F0() }
+
+func Get_dword_587000_122852() unsafe.Pointer {
+	return memmap.PtrOff(0x5D4594, 830980)
+}

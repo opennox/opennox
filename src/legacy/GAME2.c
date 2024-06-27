@@ -136,7 +136,6 @@ extern uint32_t dword_5d4594_1046516;
 extern uint32_t dword_5d4594_832536;
 extern uint32_t dword_5d4594_1046952;
 extern void* dword_587000_81128;
-extern void* dword_587000_122852;
 extern uint32_t dword_5d4594_1046532;
 extern uint32_t dword_5d4594_1049496;
 extern uint32_t dword_5d4594_1047932;
@@ -295,7 +294,7 @@ void sub_44D5C0(int a1, int a2) {
 		v2 = (*(uint32_t*)((uint32_t)dword_587000_81128 + 4) >> 16) *
 			 ((*getMemU16Ptr(0x5D4594, 830882) * ((a2 * (unsigned int)*getMemU16Ptr(0x5D4594, 830986)) >> 14)) >> 14);
 		*getMemU32Ptr(0x5D4594, 830876) &= 0xFFFFFFFD;
-		**(uint32_t**)&dword_587000_122852 &= 0xFFFFFFFD;
+		*getMemU32Ptr(0x5D4594, 830980) &= 0xFFFFFFFD;
 		AIL_set_stream_volume(a1, (int)(127 * (v2 >> 14)) / 100);
 	}
 }

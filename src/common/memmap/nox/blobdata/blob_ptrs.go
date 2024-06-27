@@ -9,7 +9,6 @@ type Ptrs struct {
 	Ptr_dword_587000_155144                   *unsafe.Pointer
 	Ptr_dword_587000_127004                   *unsafe.Pointer
 	Ptr_dword_587000_93164                    *unsafe.Pointer
-	Ptr_dword_587000_122852                   *unsafe.Pointer
 	Ptr_dword_587000_81128                    *unsafe.Pointer
 
 	Ptr_sub_4DFB50                            unsafe.Pointer
