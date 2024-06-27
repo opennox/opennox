@@ -141,3 +141,7 @@ func Get_dword_587000_122852() unsafe.Pointer {
 func Get_dword_587000_93164() unsafe.Pointer {
 	return memmap.PtrOff(0x5D4594, 816244)
 }
+
+func Get_dword_587000_127004() unsafe.Pointer {
+	return memmap.PtrOff(0x5D4594, 1045324)
+}

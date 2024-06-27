@@ -128,7 +128,6 @@ extern uint32_t dword_5d4594_2487524;
 extern uint32_t dword_5d4594_1522612;
 extern uint32_t dword_5d4594_1045468;
 extern uint32_t nox_xxx_lightningTargetArrayIndex_5d4594_2487904;
-extern void* dword_587000_127004;
 extern uint32_t nox_wol_server_result_cnt_815088;
 extern uint32_t dword_5d4594_1046924;
 extern uint32_t nox_xxx_polygonNextAngle_587000_60356;

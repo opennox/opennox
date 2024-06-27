@@ -131,7 +131,6 @@ uint32_t dword_5d4594_2487524 = 0;
 uint32_t dword_5d4594_1522612 = 0;
 uint32_t dword_5d4594_1045468 = 0;
 uint32_t nox_xxx_lightningTargetArrayIndex_5d4594_2487904 = 0;
-void* dword_587000_127004 = 0;
 uint32_t nox_wol_server_result_cnt_815088 = 0;
 uint32_t dword_5d4594_1046924 = 0;
 uint32_t nox_xxx_polygonNextAngle_587000_60356 = 0x1;

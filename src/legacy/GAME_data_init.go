@@ -36,7 +36,6 @@ package legacy
 #include "client__drawable__update__vortexup.h"
 extern void* nox_xxx_aClosewoodengat_587000_133480;
 extern void* dword_587000_155144;
-extern void* dword_587000_127004;
 extern void* dword_587000_81128;
 */
 import "C"
@@ -50,7 +49,6 @@ func InitBlobData() {
 	blobdata.Init(&blobdata.Ptrs{
 		Ptr_nox_xxx_aClosewoodengat_587000_133480: &C.nox_xxx_aClosewoodengat_587000_133480,
 		Ptr_dword_587000_155144:                   &C.dword_587000_155144,
-		Ptr_dword_587000_127004:                   &C.dword_587000_127004,
 		Ptr_dword_587000_81128:                    &C.dword_587000_81128,
 
 		Ptr_sub_4DFB50:                            unsafe.Pointer(C.sub_4DFB50),

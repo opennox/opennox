@@ -143,7 +143,6 @@ extern uint32_t dword_5d4594_1049512;
 extern uint32_t nox_wnd_briefing_831232;
 extern uint32_t dword_5d4594_1045432;
 extern uint32_t dword_5d4594_1046924;
-extern void* dword_587000_127004;
 extern uint32_t dword_5d4594_1045468;
 extern uint32_t dword_5d4594_1045532;
 extern uint32_t dword_5d4594_1045536;
@@ -924,7 +923,7 @@ void sub_4519C0() {
 		return;
 	}
 	*getMemU32Ptr(0x5D4594, 1045448) = 1;
-	sub_486520(*(unsigned int**)&dword_587000_127004);
+	sub_486520(getMemAt(0x5D4594, 1045324));
 	v1 = *getMemU32Ptr(0x5D4594, 840612);
 	++*getMemU32Ptr(0x5D4594, 1045440);
 	if (*(unsigned char**)getMemAt(0x5D4594, 840612) != getMemAt(0x5D4594, 840612)) {
@@ -1515,7 +1514,7 @@ int* sub_452810(int a1, char a2) {
 				return 0;
 			}
 			sub_4BDA80((int)v3);
-			v2[29] = dword_587000_127004;
+			v2[29] = getMemAt(0x5D4594, 1045324);
 			v2[30] = a1;
 			if (a2 & 1) {
 				v2[32] = -1;

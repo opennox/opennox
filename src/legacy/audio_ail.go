@@ -20,7 +20,6 @@ void sub_43D3C0(int a1, int a2);
 int sub_486640(void* a1, int a2);
 int nox_xxx_parseSoundSetBin_424170(char* a1);
 
-extern void* dword_587000_127004;
 extern uint32_t dword_5d4594_816092;
 extern uint32_t dword_5d4594_816364;
 extern uint32_t dword_5d4594_816376;
@@ -271,10 +270,6 @@ func Get_sub_43E910() unsafe.Pointer {
 
 func Get_sub_43E8E0() unsafe.Pointer {
 	return C.sub_43E8E0
-}
-
-func Get_dword_587000_127004() unsafe.Pointer {
-	return C.dword_587000_127004
 }
 
 func Sub_43F0E0(v unsafe.Pointer) int {

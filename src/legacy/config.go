@@ -9,7 +9,6 @@ package legacy
 #include "GAME3_2.h"
 #include "GAME5_2.h"
 #include "common__system__settings.h"
-extern void* dword_587000_127004;
 extern unsigned int dword_5d4594_1193156;
 extern unsigned int nox_client_translucentFrontWalls_805844;
 extern unsigned int nox_client_highResFrontWalls_80820;
