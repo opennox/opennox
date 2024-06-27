@@ -82,7 +82,6 @@ var noxMemmap = []struct {
 	{0x587000, 91800, 4, "nox_win_depth_menu"},                            // 0x59D698
 	{0x587000, 91804, 36, "nox_video_modes"},                              // 0x59D69C
 	{0x587000, 93156, 4, "dword_587000_93156"},                            // 0x59DBE4
-	{0x587000, 93164, 4, "dword_587000_93164"},                            // 0x59DBEC
 	{0x587000, 93196, 4, "nox_continue_mainloop_93196"},                   // 0x59DC0C
 	{0x587000, 93200, 4, "nox_game_continueMenuOrHost_93200"},             // 0x59DC10
 	{0x587000, 93944, 4, "dword_587000_93944"},                            // 0x59DEF8

@@ -33,7 +33,6 @@ void sub_44D960();
 void sub_453050();
 int sub_451850(int a2, void* a3);
 extern void* dword_587000_81128;
-extern void* dword_587000_93164;
 extern void* dword_5d4594_805984;
 extern void* dword_587000_155144;
 */

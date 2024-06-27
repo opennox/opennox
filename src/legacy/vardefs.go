@@ -155,7 +155,6 @@ extern uint32_t dword_5d4594_816368;
 extern uint32_t dword_5d4594_1062476;
 extern uint32_t dword_5d4594_1090276;
 extern uint32_t dword_5d4594_1049496;
-extern void* dword_587000_93164;
 extern uint32_t dword_5d4594_1098624;
 extern uint32_t dword_5d4594_1569672;
 extern uint32_t dword_5d4594_1197316;
@@ -189,7 +188,6 @@ extern uint32_t dword_5d4594_3484;
 extern void* nox_alloc_screenParticles_806044;
 extern uint32_t dword_5d4594_528252;
 extern uint32_t dword_5d4594_1309828;
-extern void* dword_587000_122852;
 extern uint32_t dword_5d4594_1301776;
 extern uint32_t nox_xxx_screenWidth_587000_184452;
 extern uint32_t dword_5d4594_1550916;
@@ -834,9 +832,6 @@ func Get_dword_5d4594_528252() int {
 }
 func Get_dword_5d4594_528260() int {
 	return int(C.dword_5d4594_528260)
-}
-func Get_dword_587000_93164() unsafe.Pointer {
-	return C.dword_587000_93164
 }
 func Get_nox_client_translucentFrontWalls_805844() int {
 	return int(C.nox_client_translucentFrontWalls_805844)
