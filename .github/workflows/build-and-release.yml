@@ -379,7 +379,7 @@ jobs:
     name: Github release
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
-    needs: [release_repackage_linux_appimage, release_repackage_linux_gzip, release_repackage_win]
+    needs: [release_repackage_linux_appimage, release_repackage_linux_gzip, release_repackage_win, release_repackage_win7]
     steps:
       - name: Cleanup
         run: |
