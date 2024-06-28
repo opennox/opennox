@@ -242,7 +242,7 @@ void sub_44D3A0() {
 		}
 		break;
 	case 2:
-		sub_486320(getMemAt(0x5D4594, 830876), 0x4000);
+		sub_486320(get_counter_5d4594_830876(), 0x4000);
 		if (!sub_44D7E0(*getMemIntPtr(0x5D4594, 830868))) {
 			dword_5d4594_830864 = 0;
 			dword_5d4594_830872 = 0;
@@ -256,7 +256,7 @@ void sub_44D3A0() {
 		if (!dword_587000_122848 || !dword_5d4594_830972 || dword_5d4594_830872 != dword_5d4594_830972 ||
 			!dword_5d4594_831088 || AIL_stream_status(dword_5d4594_831088) == 2) {
 			dword_5d4594_830864 = 4;
-			sub_486350((int)getMemAt(0x5D4594, 830876), 0);
+			sub_486350(get_counter_5d4594_830876(), 0);
 		}
 		break;
 	case 4:
@@ -276,10 +276,10 @@ void sub_44D3A0() {
 	default:
 		break;
 	}
-	sub_486520(getMemUintPtr(0x5D4594, 830980));
-	sub_486520(getMemUintPtr(0x5D4594, 830876));
-	if (dword_5d4594_831088 && (**(uint8_t**)&dword_587000_81128 & 2 || getMemByte(0x5D4594, 830876) & 2 ||
-								getMemByte(0x5D4594, 830980) & 2)) {
+	sub_486520(get_counter_5d4594_830980());
+	sub_486520(get_counter_5d4594_830876());
+	if (dword_5d4594_831088 && (**(uint8_t**)&dword_587000_81128 & 2 || (*(uint8_t*)get_counter_5d4594_830876()) & 2 ||
+								(*(uint8_t*)get_counter_5d4594_830980()) & 2)) {
 		sub_44D5C0(*(int*)&dword_5d4594_831088, *getMemIntPtr(0x5D4594, 830860));
 	}
 }
@@ -291,9 +291,9 @@ void sub_44D5C0(int a1, int a2) {
 
 	if (a1) {
 		v2 = (*(uint32_t*)((uint32_t)dword_587000_81128 + 4) >> 16) *
-			 ((*getMemU16Ptr(0x5D4594, 830882) * ((a2 * (unsigned int)*getMemU16Ptr(0x5D4594, 830986)) >> 14)) >> 14);
-		*getMemU32Ptr(0x5D4594, 830876) &= 0xFFFFFFFD;
-		*getMemU32Ptr(0x5D4594, 830980) &= 0xFFFFFFFD;
+			 ((*getMemU16Ptr(0x5D4594, 830882) * ((a2 * (unsigned int)*(uint16_t*)((int)get_counter_5d4594_830980() + 6)) >> 14)) >> 14);
+		*(uint32_t*)get_counter_5d4594_830876() &= 0xFFFFFFFD;
+		*(uint32_t*)get_counter_5d4594_830980() &= 0xFFFFFFFD;
 		AIL_set_stream_volume(a1, (int)(127 * (v2 >> 14)) / 100);
 	}
 }
@@ -923,7 +923,7 @@ void sub_4519C0() {
 		return;
 	}
 	*getMemU32Ptr(0x5D4594, 1045448) = 1;
-	sub_486520(getMemAt(0x5D4594, 1045324));
+	sub_486520(*(unsigned int**)&dword_587000_127004);
 	v1 = *getMemU32Ptr(0x5D4594, 840612);
 	++*getMemU32Ptr(0x5D4594, 1045440);
 	if (*(unsigned char**)getMemAt(0x5D4594, 840612) != getMemAt(0x5D4594, 840612)) {
@@ -1514,7 +1514,7 @@ int* sub_452810(int a1, char a2) {
 				return 0;
 			}
 			sub_4BDA80((int)v3);
-			v2[29] = getMemAt(0x5D4594, 1045324);
+			v2[29] = dword_587000_127004;
 			v2[30] = a1;
 			if (a2 & 1) {
 				v2[32] = -1;

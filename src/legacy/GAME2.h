@@ -274,4 +274,9 @@ int sub_460B90(int a1);
 void nox_video_fadeInScreen_44DAB0(int a1, int a2, void* a3);
 void nox_video_fadeOutScreen_44DB30(int a1, int a2, void* a3);
 
+void* get_counter_5d4594_830876();
+void* get_counter_5d4594_830980();
+void* get_counter_5d4594_816244();
+void* get_counter_5d4594_1045324();
+
 #endif // NOX_PORT_GAME2

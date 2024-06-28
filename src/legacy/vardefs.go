@@ -72,7 +72,6 @@ extern uint32_t dword_5d4594_831236;
 extern uint32_t dword_5d4594_1047540;
 extern uint32_t dword_5d4594_1320964;
 extern uint32_t dword_5d4594_1049800_inventory_click_row_index;
-extern uint32_t dword_5d4594_1309720;
 extern uint32_t dword_5d4594_1046936;
 extern uint32_t nox_xxx_lightningTarget_5d4594_2487908;
 extern uint32_t dword_5d4594_1107036;
@@ -786,6 +785,33 @@ import (
 	"github.com/noxworld-dev/opennox/v1/client/noxrender"
 	"github.com/noxworld-dev/opennox/v1/server"
 )
+
+var (
+	counter_5d4594_830876  *TimerGroup = &TimerGroup{}
+	counter_5d4594_830980  *TimerGroup = &TimerGroup{}
+	counter_5d4594_816244  *TimerGroup = &TimerGroup{}
+	counter_5d4594_1045324 *TimerGroup = &TimerGroup{}
+)
+
+//export get_counter_5d4594_830876
+func get_counter_5d4594_830876() unsafe.Pointer {
+	return unsafe.Pointer(counter_5d4594_830876)
+}
+
+//export get_counter_5d4594_830980
+func get_counter_5d4594_830980() unsafe.Pointer {
+	return unsafe.Pointer(counter_5d4594_830980)
+}
+
+//export get_counter_5d4594_816244
+func get_counter_5d4594_816244() unsafe.Pointer {
+	return unsafe.Pointer(counter_5d4594_816244)
+}
+
+//export get_counter_5d4594_1045324
+func get_counter_5d4594_1045324() unsafe.Pointer {
+	return unsafe.Pointer(counter_5d4594_1045324)
+}
 
 func Sub_460D40() bool {
 	return C.dword_5d4594_1049508 != 0

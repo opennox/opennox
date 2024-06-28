@@ -204,7 +204,7 @@ void sub_43D2D0() {
 
 	if (dword_5d4594_816340) {
 		if (dword_5d4594_816364) {
-			sub_486520(getMemUintPtr(0x5D4594, 816244));
+			sub_486520(get_counter_5d4594_816244());
 			sub_486520(getMemUintPtr(0x5D4594, 816148));
 			v1 = *(uint32_t*)((uint32_t)dword_587000_81128 + 4) >> 16;
 			if (v1 == *getMemU32Ptr(0x587000, 93168)) {
@@ -219,7 +219,7 @@ void sub_43D2D0() {
 			}
 			if (dword_5d4594_816364) {
 				if (**(uint8_t**)&dword_587000_81128 & 2 || getMemByte(0x5D4594, 816148) & 2 ||
-					getMemByte(0x5D4594, 816244) & 2) {
+					(*(uint8_t*)get_counter_5d4594_816244()) & 2) {
 					sub_43D3C0(*(int*)&dword_5d4594_816364, *getMemIntPtr(0x5D4594, 816096));
 				}
 			}
@@ -235,7 +235,7 @@ void sub_43D3C0(int a1, int a2) {
 		v2 = (*(uint32_t*)((uint32_t)dword_587000_81128 + 4) >> 16) *
 			 ((*getMemU16Ptr(0x5D4594, 816154) * ((a2 * (unsigned int)*getMemU16Ptr(0x5D4594, 816250)) >> 14)) >> 14);
 		*getMemU32Ptr(0x5D4594, 816148) &= 0xFFFFFFFD;
-		*getMemU32Ptr(0x5D4594, 816244) &= 0xFFFFFFFD;
+		*(uint32_t*)get_counter_5d4594_816244() &= 0xFFFFFFFD;
 		AIL_set_stream_volume(a1, (int)(127 * (v2 >> 14)) / 100);
 	}
 }

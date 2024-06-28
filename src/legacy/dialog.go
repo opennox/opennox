@@ -109,9 +109,8 @@ func Nox_xxx_WorkerHurt_44D810() int32 {
 	}
 	C.dword_5d4594_831092 = C.uint32_t(sub_43F130())
 	C.dword_587000_122848 = C.uint32_t(bool2int(C.dword_5d4594_831092 != 0))
-	ptr_830876 := (*TimerGroup)(memmap.PtrOff(0x5D4594, 830876))
-	TimerGroupInit(ptr_830876)
-	TimerSetParams(&ptr_830876.Timers[0], 0x1F4 /* 500 */, 0x4000)
+	TimerGroupInit(counter_5d4594_830876)
+	TimerSetParams(&counter_5d4594_830876.Timers[0], 0x1F4 /* 500 */, 0x4000)
 	C.dword_5d4594_830864 = 0
 	C.dword_5d4594_830972 = 0
 	C.dword_5d4594_830872 = 0
@@ -135,13 +134,13 @@ func Sub_44D8F0() {
 func sub_44D8F0() { Sub_44D8F0() }
 
 func Get_dword_587000_122852() unsafe.Pointer {
-	return memmap.PtrOff(0x5D4594, 830980)
+	return unsafe.Pointer(counter_5d4594_830980)
 }
 
 func Get_dword_587000_93164() unsafe.Pointer {
-	return memmap.PtrOff(0x5D4594, 816244)
+	return unsafe.Pointer(counter_5d4594_816244)
 }
 
 func Get_dword_587000_127004() unsafe.Pointer {
-	return memmap.PtrOff(0x5D4594, 1045324)
+	return unsafe.Pointer(counter_5d4594_1045324)
 }
