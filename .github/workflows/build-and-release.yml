@@ -359,18 +359,18 @@ jobs:
             rm -rf /tmp/opennox-win-release
             mkdir -p /tmp/opennox-win-release
             export VERSION=$(git name-rev --tags --name-only $(git rev-parse HEAD))
-            makensis -DVERSION="$VERSION-win7" -DDATA="/tmp/opennox-win/" -DOUTDIR="/tmp/opennox-win-release/" ./scripts/opennox.nsi
+            makensis -DVERSION="win7-$VERSION" -DDATA="/tmp/opennox-win/" -DOUTDIR="/tmp/opennox-win-release/" ./scripts/opennox.nsi
 
             cd /tmp/opennox-win
-            zip -9 -r /tmp/opennox-win-release/OpenNox-$VERSION-win7.zip ./*
+            zip -9 -r /tmp/opennox-win-release/OpenNox-win7-$VERSION.zip ./*
 
         - name: Upload the archive
           uses: actions/upload-artifact@v3
           with:
             name: opennox-release-win7
             path: |
-              /tmp/opennox-win-release/OpenNox-*.zip
-              /tmp/opennox-win-release/OpenNox-*.exe
+              /tmp/opennox-win-release/OpenNox-win7-*.zip
+              /tmp/opennox-win-release/OpenNox-win7-*.exe
             if-no-files-found: error
 
   github_release:
