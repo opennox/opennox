@@ -86,7 +86,7 @@ extern uint32_t dword_5d4594_1049536;
 extern uint32_t dword_5d4594_1046944;
 extern uint32_t dword_5d4594_1045424;
 extern uint32_t dword_5d4594_1045584;
-extern uint32_t dword_5d4594_830972;
+extern char* dword_5d4594_830972;
 extern uint32_t dword_5d4594_1049696;
 extern uint32_t dword_5d4594_1046540;
 extern uint32_t dword_5d4594_1045588;
@@ -131,7 +131,7 @@ extern uint32_t dword_5d4594_1047512;
 extern uint32_t dword_5d4594_832532;
 extern uint32_t dword_5d4594_1046656;
 extern uint32_t dword_5d4594_1049484;
-extern uint32_t dword_5d4594_830872;
+extern char* dword_5d4594_830872;
 extern uint32_t dword_5d4594_1046516;
 extern uint32_t dword_5d4594_832536;
 extern uint32_t dword_5d4594_1046952;
@@ -214,101 +214,6 @@ int sub_44D090(int a1) {
 		result = (*(uint32_t*)(result + 32) & 0x20400000) != 0;
 	}
 	return result;
-}
-
-//----- (0044D3A0) --------------------------------------------------------
-void sub_44D3A0() {
-	if (!dword_5d4594_831076) {
-		return;
-	}
-	switch (dword_5d4594_830864) {
-	case 0:
-		if (dword_5d4594_830872 && dword_587000_122848) {
-			if (!sub_44D660(*(const char**)&dword_5d4594_830872)) {
-				dword_5d4594_830872 = 0;
-			} else if (!dword_587000_122856 || !dword_587000_93160 || dword_5d4594_831084) {
-				dword_5d4594_830864 = 2;
-			} else {
-				dword_5d4594_831084 = 1;
-				sub_43DBD0();
-				dword_5d4594_830864 = 1;
-			}
-		} else if (dword_5d4594_831084) {
-			sub_43DBE0();
-			dword_5d4594_831084 = 0;
-		}
-		break;
-	case 1:
-		if (!sub_43DC40()) {
-			dword_5d4594_830864 = 2;
-		}
-		break;
-	case 2:
-		sub_486320(getMemAt(0x5D4594, 830876), 0x4000);
-		if (!sub_44D7E0(*getMemIntPtr(0x5D4594, 830868))) {
-			dword_5d4594_830864 = 0;
-			dword_5d4594_830872 = 0;
-		} else {
-			dword_5d4594_830864 = 3;
-			dword_5d4594_830972 = dword_5d4594_830872;
-			*getMemU32Ptr(0x5D4594, 830860) = *getMemU32Ptr(0x5D4594, 830868);
-		}
-		break;
-	case 3:
-		if (!dword_587000_122848 || !dword_5d4594_830972 || dword_5d4594_830872 != dword_5d4594_830972 ||
-			!dword_5d4594_831088 || AIL_stream_status(dword_5d4594_831088) == 2) {
-			dword_5d4594_830864 = 4;
-			sub_486350((int)getMemAt(0x5D4594, 830876), 0);
-		}
-		break;
-	case 4:
-		if (!dword_5d4594_831088 || AIL_stream_status(dword_5d4594_831088) == 2 ||
-			!(*getMemU32Ptr(0x5D4594, 830880) & 0xFFFF0000)) {
-			sub_44D640();
-			dword_5d4594_830864 = 0;
-			if (dword_5d4594_831084) {
-				sub_43DBE0();
-				dword_5d4594_831084 = 0;
-			}
-			if (dword_5d4594_830972 == dword_5d4594_830872) {
-				dword_5d4594_830872 = 0;
-			}
-		}
-		break;
-	default:
-		break;
-	}
-	sub_486520(getMemUintPtr(0x5D4594, 830980));
-	sub_486520(getMemUintPtr(0x5D4594, 830876));
-	if (dword_5d4594_831088 && (**(uint8_t**)&dword_587000_81128 & 2 || getMemByte(0x5D4594, 830876) & 2 ||
-								getMemByte(0x5D4594, 830980) & 2)) {
-		sub_44D5C0(*(int*)&dword_5d4594_831088, *getMemIntPtr(0x5D4594, 830860));
-	}
-}
-// 58141C: using guessed type int AIL_stream_status(uint32_t);
-
-//----- (0044D5C0) --------------------------------------------------------
-void sub_44D5C0(int a1, int a2) {
-	unsigned int v2; // eax
-
-	if (a1) {
-		v2 = (*(uint32_t*)((uint32_t)dword_587000_81128 + 4) >> 16) *
-			 ((*getMemU16Ptr(0x5D4594, 830882) * ((a2 * (unsigned int)*getMemU16Ptr(0x5D4594, 830986)) >> 14)) >> 14);
-		*getMemU32Ptr(0x5D4594, 830876) &= 0xFFFFFFFD;
-		**(uint32_t**)&dword_587000_122852 &= 0xFFFFFFFD;
-		AIL_set_stream_volume(a1, (int)(127 * (v2 >> 14)) / 100);
-	}
-}
-// 581430: using guessed type int AIL_set_stream_volume(uint32_t, uint32_t);
-
-//----- (0044D8C0) --------------------------------------------------------
-void sub_44D8C0() {
-	if (dword_5d4594_831076) {
-		sub_44D8F0();
-		sub_44D640();
-		sub_44D3A0();
-		dword_5d4594_831076 = 0;
-	}
 }
 
 //----- (0044D900) --------------------------------------------------------

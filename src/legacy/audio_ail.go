@@ -14,7 +14,6 @@ void sub_43EDB0(HSAMPLE a1);
 int sub_43EE00(void* a1);
 int sub_43F060(uint32_t* a1);
 int sub_43F0E0(uint32_t* a1);
-void sub_44D5C0(int a1, int a2);
 char* sub_413890();
 void sub_43D3C0(int a1, int a2);
 int sub_486640(void* a1, int a2);
@@ -325,10 +324,6 @@ func Sub_44D960() {
 
 func Sub_453050() {
 	C.sub_453050()
-}
-
-func Sub_44D5C0(s ail.Stream, a2 int) {
-	C.sub_44D5C0(C.int(s), C.int(a2))
 }
 
 func Get_dword_5d4594_816376() ail.Driver {

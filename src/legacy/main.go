@@ -105,10 +105,6 @@ func Nox_common_maplist_free_4D0970() {
 	C.nox_common_maplist_free_4D0970()
 }
 
-func Sub_44D8C0() {
-	C.sub_44D8C0()
-}
-
 func Sub_451970() {
 	C.sub_451970()
 }

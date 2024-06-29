@@ -118,10 +118,6 @@ func Sub_495430() {
 	C.sub_495430()
 }
 
-func Sub_44D3A0() {
-	C.sub_44D3A0()
-}
-
 func Sub_43D440() {
 	C.sub_43D440()
 }
