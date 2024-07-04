@@ -29,7 +29,7 @@ int sub_4BD710(int a1);
 uint32_t* sub_4BD720(int a1);
 void sub_4BD7A0(void* lpMem);
 uint32_t* sub_4BD7C0(uint32_t* a1);
-int sub_4BD840(int a3);
+void sub_4BD840(int a3);
 int sub_4BD8C0(int a1);
 int sub_4BD940(int a1);
 int sub_4BD9B0(uint32_t* a2);

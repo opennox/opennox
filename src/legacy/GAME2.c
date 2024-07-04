@@ -107,6 +107,7 @@ extern uint32_t dword_5d4594_1046932;
 extern uint32_t dword_5d4594_1046528;
 extern uint32_t dword_5d4594_1046948;
 extern uint32_t dword_5d4594_830864;
+extern uint32_t dword_5d4594_830868;
 extern uint32_t dword_5d4594_1047528;
 extern uint32_t dword_5d4594_1046636;
 extern uint32_t dword_5d4594_832520;
@@ -214,22 +215,6 @@ int sub_44D090(int a1) {
 		result = (*(uint32_t*)(result + 32) & 0x20400000) != 0;
 	}
 	return result;
-}
-
-//----- (0044D900) --------------------------------------------------------
-int nox_xxx_playDialogFile_44D900(char* a1p, int a2) {
-	int a1 = a1p;
-	int v2; // eax
-
-	if (dword_587000_122848 && a1) {
-		v2 = a2;
-		if (a2 > 100) {
-			v2 = 100;
-		}
-		dword_5d4594_830872 = a1;
-		*getMemU32Ptr(0x5D4594, 830868) = v2;
-	}
-	return 1;
 }
 
 //----- (0044D960) --------------------------------------------------------

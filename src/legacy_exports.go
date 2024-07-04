@@ -151,10 +151,7 @@ func init() {
 	legacy.Sub_43D650 = sub_43D650
 	legacy.Sub_43D680 = sub_43D680
 	legacy.Sub_43D6A0 = sub_43D6A0
-	legacy.Sub_44D640 = sub_44D640
-	legacy.Sub_44D7E0 = sub_44D7E0
 	legacy.Nox_xxx_musicStartPlay_43D6C0 = nox_xxx_musicStartPlay_43D6C0
-	legacy.Sub_44D660 = sub_44D660
 	legacy.Sub_43F060 = sub_43F060
 	legacy.Sub_43EC30 = sub_43EC30
 	legacy.Sub_43ECB0 = sub_43ECB0

@@ -1,0 +1,14 @@
+{
+	"lang": 8,
+	"entries": [
+		{
+			"id": "Con03B.scr:WorkerHurt",
+			"vals": [
+				{
+					"str": "NOTHING",
+					"str2": "empty"
+				}
+			]
+		}
+	]
+}

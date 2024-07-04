@@ -708,7 +708,7 @@ uint32_t* sub_4BD7C0(uint32_t* a1) {
 }
 
 //----- (004BD840) --------------------------------------------------------
-int sub_4BD840(int a3) {
+void sub_4BD840(int a3) {
 	int v1;           // ebp
 	unsigned int* v2; // edi
 	uint32_t* v3;     // esi
@@ -730,9 +730,8 @@ int sub_4BD840(int a3) {
 	sub_486570(v2, (uint32_t*)(v1 + 88));
 	result = *(uint32_t*)(v1 + 184);
 	if (result) {
-		result = sub_486570(v2, *(uint32_t**)(v1 + 184));
+		 sub_486570(v2, *(uint32_t**)(v1 + 184));
 	}
-	return result;
 }
 
 //----- (004BD8C0) --------------------------------------------------------

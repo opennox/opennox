@@ -28,6 +28,7 @@ import (
 	"github.com/noxworld-dev/opennox/v1/legacy"
 	"github.com/noxworld-dev/opennox/v1/legacy/common/alloc"
 	"github.com/noxworld-dev/opennox/v1/legacy/common/ccall"
+	"github.com/noxworld-dev/opennox/v1/legacy/dialog"
 	"github.com/noxworld-dev/opennox/v1/server"
 )
 
@@ -988,7 +989,7 @@ func sub_43DDA0() {
 }
 
 func sub_450580() {
-	legacy.Sub_44D8F0()
+	dialog.Sub_44D8F0()
 	*memmap.PtrUint32(0x5D4594, 832488) = 1
 	legacy.Set_dword_5d4594_831224(0)
 	*memmap.PtrUint32(0x5D4594, 831292) = 0

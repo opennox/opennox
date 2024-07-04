@@ -36,6 +36,7 @@ import (
 	"github.com/noxworld-dev/opennox/v1/legacy"
 	"github.com/noxworld-dev/opennox/v1/legacy/client/audio/ail"
 	"github.com/noxworld-dev/opennox/v1/legacy/common/alloc/handles"
+	"github.com/noxworld-dev/opennox/v1/legacy/dialog"
 )
 
 func init() {
@@ -491,7 +492,7 @@ func videoUpdateGameMode(mode image.Point) {
 }
 
 func sub_4AA9C0() int {
-	legacy.Sub_44D8F0()
+	dialog.Sub_44D8F0()
 	if !env.IsE2E() {
 		videoUpdateGameMode(guiOptionsRes)
 	}
@@ -530,7 +531,7 @@ func sub_4311B0() {
 	sub_43DCC0()
 	sub_4312B0()
 	sub_43D970()
-	legacy.Sub_44D8C0()
+	dialog.Sub_44D8C0()
 	legacy.Sub_451970()
 	if dword_5d4594_805980 != nil {
 		dword_5d4594_805980.Free()
@@ -547,7 +548,7 @@ func sub_4311B0() {
 
 func sub_4312B0() {
 	legacy.Sub_431290()
-	legacy.Sub_44D8F0()
+	dialog.Sub_44D8F0()
 	legacy.Sub_43D990()
 }
 

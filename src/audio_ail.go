@@ -17,6 +17,8 @@ import (
 	"github.com/noxworld-dev/opennox/v1/legacy/client/audio/ail"
 	"github.com/noxworld-dev/opennox/v1/legacy/common/alloc"
 	"github.com/noxworld-dev/opennox/v1/legacy/common/ccall"
+	"github.com/noxworld-dev/opennox/v1/legacy/dialog"
+	"github.com/noxworld-dev/opennox/v1/legacy/timer"
 )
 
 var (
@@ -80,7 +82,7 @@ func sub_43E940(a1 unsafe.Pointer) int {
 	audioTimer93944 = ail.RegisterTimer(func(u uint32) {
 		sub_486EF0()
 		legacy.Sub_43D2D0()
-		legacy.Sub_486620((*legacy.TimerGroup)(legacy.Get_dword_587000_127004()))
+		(*timer.TimerGroup)(legacy.Get_dword_587000_127004()).ClearUpdated()
 	})
 	if audioTimer93944 == math.MaxUint32 {
 		return -2147221504 // 0x80040000
@@ -213,23 +215,6 @@ func sub_43D6A0() {
 	}
 }
 
-func sub_44D640() {
-	if s := legacy.Get_dword_5d4594_831088(); s != 0 {
-		s.Close()
-		legacy.Set_dword_5d4594_831088(0)
-	}
-}
-
-func sub_44D7E0(a1 int) int {
-	s := legacy.Get_dword_5d4594_831088()
-	if s == 0 {
-		return 0
-	}
-	legacy.Sub_44D5C0(s, a1)
-	s.Start()
-	return 1
-}
-
 var audioTable = []string{
 	"",
 	"chap1", "chap2wiz", "chap2con", "chap2war", "chap3", "chap4", "chap5", "chap6", "chap7", "chap8",
@@ -256,7 +241,7 @@ func nox_xxx_musicStartPlay_43D6C0(a1p unsafe.Pointer) int {
 	}
 	s := legacy.Get_dword_5d4594_816376().OpenStream(path, 204800)
 	if s == 0 {
-		if legacy.Get_dword_587000_122856() != 0 && legacy.Sub_44D930() {
+		if dialog.Get_dword_587000_122856() != 0 && dialog.Sub_44D930() {
 			return 0
 		}
 		v5 := legacy.Sub_413890()
@@ -271,8 +256,8 @@ func nox_xxx_musicStartPlay_43D6C0(a1p unsafe.Pointer) int {
 		}
 	}
 	s.SetPosition(int(a1[2]))
-	legacy.Sub_486320(memmap.PtrOff(0x5D4594, 816148), 0)
-	legacy.Sub_486350(memmap.PtrOff(0x5D4594, 816148), 0x4000)
+	(*timer.Timer)(memmap.PtrOff(0x5D4594, 816148)).SetRaw(0)
+	(*timer.Timer)(memmap.PtrOff(0x5D4594, 816148)).SetInterp(0x4000)
 	legacy.Sub_43D3C0(s, int(a1[1]))
 	s.Start()
 	legacy.Set_dword_5d4594_816092(ind)
@@ -282,29 +267,6 @@ func nox_xxx_musicStartPlay_43D6C0(a1p unsafe.Pointer) int {
 	a1[2] = 0
 	legacy.Set_dword_5d4594_816364(s)
 	return 1
-}
-
-func sub_44D660(name string) bool {
-	sub_44D640()
-	path := filepath.Join("dialog", name)
-	legacy.Set_dword_587000_122856(0)
-	if !strings.Contains(path, ".") {
-		path += ".wav"
-	}
-	s := legacy.Get_dword_5d4594_831092().OpenStream(path, 51200)
-	legacy.Set_dword_5d4594_831088(s)
-	if s != 0 {
-		return true
-	}
-	v4 := legacy.Sub_413890()
-	if v4 == "" {
-		return s != 0
-	}
-	legacy.Set_dword_587000_122856(1)
-	path2 := filepath.Join(v4, path)
-	s = legacy.Get_dword_5d4594_831092().OpenStream(path2, 51200)
-	legacy.Set_dword_5d4594_831088(s)
-	return s != 0
 }
 
 func sub_43F060(a1p unsafe.Pointer) int {
@@ -337,28 +299,28 @@ func nox_audio_initall(a3 int) int {
 			dword_5d4594_805980 = sub_4866F0("audio", "audio")
 		}
 	}
-	legacy.Sub_4864A0(memmap.PtrOff(0x5D4594, 805884))
-	legacy.Sub_4864A0(legacy.Get_dword_587000_93164())
-	legacy.Sub_4864A0(legacy.Get_dword_587000_122852())
-	legacy.Sub_4864A0(legacy.Get_dword_587000_127004())
-	legacy.Nox_xxx_WorkerHurt_44D810()
+	(*timer.TimerGroup)(memmap.PtrOff(0x5D4594, 805884)).Init()
+	(*timer.TimerGroup)(legacy.Get_dword_587000_93164()).Init()
+	(*timer.TimerGroup)(legacy.Get_dword_587000_122852()).Init()
+	(*timer.TimerGroup)(legacy.Get_dword_587000_127004()).Init()
+	dialog.Nox_xxx_WorkerHurt_44D810()
 	legacy.Sub_43D8E0()
 	legacy.Sub_451850(legacy.Get_dword_5d4594_805984(), unsafe.Pointer(dword_5d4594_805980))
 	v1 := configGetVolume(VolumeMusic)
 	if v1 == 0 {
 		legacy.Sub_43DC00()
 	}
-	legacy.Sub_486320(legacy.Get_dword_587000_93164(), v1)
+	(*timer.Timer)(legacy.Get_dword_587000_93164()).SetRaw(uint32(v1))
 	v2 := configGetVolume(VolumeDialog)
 	if v2 == 0 {
 		legacy.Sub_44D960()
 	}
-	legacy.Sub_486320(legacy.Get_dword_587000_122852(), v2)
+	(*timer.Timer)(legacy.Get_dword_587000_122852()).SetRaw(uint32(v2))
 	v3 := configGetVolume(VolumeFX)
 	if v3 == 0 {
 		legacy.Sub_453050()
 	}
-	legacy.Sub_486320(legacy.Get_dword_587000_127004(), v3)
+	(*timer.Timer)(legacy.Get_dword_587000_127004()).SetRaw(uint32(v3))
 	return 1
 }
 
@@ -382,7 +344,7 @@ func sub_486F30() int {
 	nox_common_list_clear_425760(unsafe.Add(legacy.Get_dword_587000_155144(), 12))
 	*(*uint32)(unsafe.Add(legacy.Get_dword_587000_155144(), 24)) = 0
 	*memmap.PtrPtr(0x5D4594, 1193340) = unsafe.Add(legacy.Get_dword_587000_155144(), 32)
-	legacy.Sub_4864A0(unsafe.Add(legacy.Get_dword_587000_155144(), 32))
+	(*timer.TimerGroup)(unsafe.Add(legacy.Get_dword_587000_155144(), 32)).Init()
 	dword_5d4594_1193336 = 1
 	return 0
 }
