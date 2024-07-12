@@ -12,7 +12,6 @@ import (
 	"github.com/noxworld-dev/opennox/v1/common/memmap"
 	"github.com/noxworld-dev/opennox/v1/legacy"
 	"github.com/noxworld-dev/opennox/v1/legacy/client/audio/ail"
-	"github.com/noxworld-dev/opennox/v1/legacy/dialog"
 )
 
 var (
@@ -181,7 +180,7 @@ func (c *Client) sub4312C0() {
 	ticks := platformTicks()
 
 	if ticks-c.ticks805996 > 33 {
-		dialog.Sub_44D3A0()
+		legacy.Dialogs.Sub_44D3A0()
 		legacy.Sub_43D440()
 		c.ticks805996 = ticks
 	}

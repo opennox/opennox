@@ -17,7 +17,6 @@ import (
 	"github.com/noxworld-dev/opennox/v1/legacy/client/audio/ail"
 	"github.com/noxworld-dev/opennox/v1/legacy/common/alloc"
 	"github.com/noxworld-dev/opennox/v1/legacy/common/ccall"
-	"github.com/noxworld-dev/opennox/v1/legacy/dialog"
 	"github.com/noxworld-dev/opennox/v1/legacy/timer"
 )
 
@@ -163,8 +162,8 @@ func sub_43EC10() int {
 	return 0
 }
 
-func sub_43F130() int {
-	return int(audioDev)
+func sub_43F130() ail.Driver {
+	return audioDev
 }
 
 func sub_43ED00(a1p unsafe.Pointer) int {
@@ -239,9 +238,9 @@ func nox_xxx_musicStartPlay_43D6C0(a1p unsafe.Pointer) int {
 	if !strings.Contains(path, ".") {
 		path += ".wav"
 	}
-	s := legacy.Get_dword_5d4594_816376().OpenStream(path, 204800)
+	s := legacy.Get_dword_5d4594_816376().OpenStream(path)
 	if s == 0 {
-		if dialog.Get_dword_587000_122856() != 0 && dialog.Sub_44D930() {
+		if legacy.Dialogs.IsFallbackMode() != 0 && legacy.Dialogs.Sub_44D930() {
 			return 0
 		}
 		v5 := legacy.Sub_413890()
@@ -250,7 +249,7 @@ func nox_xxx_musicStartPlay_43D6C0(a1p unsafe.Pointer) int {
 		}
 		legacy.Set_dword_587000_93160(1)
 		path2 := filepath.Join(v5, path)
-		s = legacy.Get_dword_5d4594_816376().OpenStream(path2, 204800)
+		s = legacy.Get_dword_5d4594_816376().OpenStream(path2)
 		if s == 0 {
 			return 0
 		}
@@ -303,7 +302,7 @@ func nox_audio_initall(a3 int) int {
 	(*timer.TimerGroup)(legacy.Get_dword_587000_93164()).Init()
 	(*timer.TimerGroup)(legacy.Get_dword_587000_122852()).Init()
 	(*timer.TimerGroup)(legacy.Get_dword_587000_127004()).Init()
-	dialog.Nox_xxx_WorkerHurt_44D810()
+	legacy.Dialogs.Nox_xxx_WorkerHurt_44D810()
 	legacy.Sub_43D8E0()
 	legacy.Sub_451850(legacy.Get_dword_5d4594_805984(), unsafe.Pointer(dword_5d4594_805980))
 	v1 := configGetVolume(VolumeMusic)

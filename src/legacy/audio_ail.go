@@ -42,7 +42,6 @@ import (
 	"unsafe"
 
 	"github.com/noxworld-dev/opennox/v1/legacy/client/audio/ail"
-	"github.com/noxworld-dev/opennox/v1/legacy/dialog"
 	"github.com/noxworld-dev/opennox/v1/legacy/timer"
 )
 
@@ -52,7 +51,7 @@ var (
 	Sub_43E940                    func(a1 unsafe.Pointer) int
 	Sub_43EFD0                    func(a1 unsafe.Pointer) int
 	Sub_43EC10                    func() int
-	Sub_43F130                    func() int
+	Sub_43F130                    func() ail.Driver
 	Sub_43ED00                    func(a1p unsafe.Pointer) int
 	Sub_43D650                    func()
 	Sub_43D680                    func()
@@ -194,7 +193,7 @@ func sub_43EC10() int {
 
 //export sub_43F130
 func sub_43F130() int {
-	return Sub_43F130()
+	return int(Sub_43F130())
 }
 
 //export sub_43ED00
@@ -420,9 +419,9 @@ func Sub_487790(a1 unsafe.Pointer, a2 int) int {
 }
 
 //export sub_44D8F0
-func sub_44D8F0() { dialog.Sub_44D8F0() }
+func sub_44D8F0() { Dialogs.Sub_44D8F0() }
 
 //export sub_44D5C0
 func sub_44D5C0(a1 int, a2 int) {
-	dialog.Sub_44D5C0(ail.Stream(a1), a2)
+	Dialogs.Sub_44D5C0(ail.Stream(a1), a2)
 }

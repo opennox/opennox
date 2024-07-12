@@ -15,7 +15,7 @@ func (s Sample) Release() {
 	handles.AssertValid(uintptr(s))
 }
 
-func (dig Driver) OpenStream(name string, mem int) Stream {
+func (dig Driver) OpenStream(name string) Stream {
 	h := handles.New()
 	return Stream(h)
 }

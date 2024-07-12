@@ -790,7 +790,7 @@ func (s *audioStream) open() error {
 	}
 }
 
-func (dig Driver) OpenStream(name string, mem int) Stream {
+func (dig Driver) OpenStream(name string) Stream {
 	if audioDebug {
 		audioLog.Println("AIL_open_stream")
 	}

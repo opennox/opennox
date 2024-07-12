@@ -13,7 +13,6 @@ import (
 	"github.com/noxworld-dev/opennox/v1/client/noxmovie"
 	"github.com/noxworld-dev/opennox/v1/common/memmap"
 	"github.com/noxworld-dev/opennox/v1/legacy"
-	"github.com/noxworld-dev/opennox/v1/legacy/dialog"
 )
 
 func (c *Client) DrawGeneral(a1 bool) error {
@@ -29,8 +28,8 @@ func (c *Client) DrawGeneral(a1 bool) error {
 	}
 	legacy.Sub_431290()
 	legacy.Sub_43DBD0()
-	dialog.Sub_44D8F0()
-	for legacy.Sub_43DC40() != 0 || dialog.Sub_44D930() {
+	legacy.Dialogs.Sub_44D8F0()
+	for legacy.Sub_43DC40() != 0 || legacy.Dialogs.Sub_44D930() {
 		c.sub4312C0()
 	}
 	v12 := sub_48B3E0(false)

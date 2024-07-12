@@ -15,7 +15,6 @@ import (
 	"github.com/noxworld-dev/opennox/v1/common/sound"
 	"github.com/noxworld-dev/opennox/v1/legacy"
 	"github.com/noxworld-dev/opennox/v1/legacy/common/alloc"
-	"github.com/noxworld-dev/opennox/v1/legacy/dialog"
 	"github.com/noxworld-dev/opennox/v1/server"
 )
 
@@ -314,7 +313,7 @@ func guiCloseNPCDialog() {
 	sub.Func94(gui.AsWindowEvent(0x400F, 0, 0))
 	legacy.Nox_xxx_wnd_46ABB0(root, 0)
 	root.SetHidden(true)
-	dialog.Sub_44D8F0()
+	legacy.Dialogs.Sub_44D8F0()
 	legacy.Set_dword_5d4594_1123520(0)
 	if !nox_client_renderGUI_80828 && memmap.Uint32(0x587000, 153436) == 1 {
 		nox_client_renderGUI_80828 = true

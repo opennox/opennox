@@ -5,239 +5,297 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/noxworld-dev/opennox-lib/strman"
+
 	"github.com/noxworld-dev/opennox/v1/legacy/client/audio/ail"
+	"github.com/noxworld-dev/opennox/v1/legacy/timer"
 )
 
+func NewDialog(
+	dir string,
+	isEnabled *uint32, state *uint32, someFlag *uint32, isFallbackMode *uint32, isInitialized *uint32, audioDriver *ail.Driver,
+	dword830860 *uint32,
+	getStrings func() *strman.StringManager,
+	timers1 *timer.TimerGroup, timers2 *timer.TimerGroup,
+	timers3 *timer.TimerGroup, timers4 *timer.TimerGroup,
+	fallbackDir func() string,
+
+	sub_43F130 func() ail.Driver, // get audio device
+	sub_43DBD0 func(), // looks like music? pair with 43DBE0
+	sub_43DBE0 func(), // looks like music? pair with 43DBD0
+	sub_43DC40 func() int, // unknown
+
+	set_dword_5d4594_831080 func(uint32),
+	get_dword_587000_93160 func() uint32,
+) *Dialog {
+	return &Dialog{
+		dir:            dir,
+		isEnabled:      isEnabled,
+		state:          state,
+		someFlag:       someFlag,
+		isFallbackMode: isFallbackMode,
+		isInitialized:  isInitialized,
+		audioDriver:    audioDriver,
+		getStrings:     getStrings,
+		timers1:        timers1,
+		timers2:        timers2,
+		timers3:        timers3,
+		timers4:        timers4,
+		fallbackDir:    fallbackDir,
+		dword830860:    dword830860,
+
+		newDriver:  sub_43F130,
+		sub_43DBD0: sub_43DBD0,
+		sub_43DBE0: sub_43DBE0,
+		sub_43DC40: sub_43DC40,
+
+		set_dword_5d4594_831080: set_dword_5d4594_831080,
+		get_dword_587000_93160:  get_dword_587000_93160,
+	}
+}
+
 type Dialog struct {
-	isEnabled          *uint32     // dword_587000_122848 - Whether dialog component is enabled.
-	volume             *uint32     // dword_5d4594_830868 - stores volume level of dialog at 0-100 range
-	fileToRead         **byte      // dword_5d4594_830872
-	currentPlayingFile **byte      // dword_5d4594_830972
-	currentStream      *ail.Stream // dword_5d4594_831088 - Stores a dialog stream currently playing
-	state              *uint32     // dword_5d4594_830864 - Internal state of dialog component
-	someFlag           *uint32     // dword_5d4594_831084 - Internal state being toggled when loading failed?
-	isFallbackMode     *uint32     // dword_587000_122856 - Initially true, becomes false after first dialog read success
-	isInitialized      *uint32     // dword_5d4594_831076
-	audioDriver        *ail.Driver // dword_5d4594_831092
+	dir                string
+	isEnabled          *uint32           // dword_587000_122848 - Whether dialog component is enabled.
+	volume             uint32            // dword_5d4594_830868 - stores volume level of dialog at 0-100 range
+	fileToRead         string            // dword_5d4594_830872
+	currentPlayingFile string            // dword_5d4594_830972
+	currentStream      ail.Stream        // dword_5d4594_831088 - Stores a dialog stream currently playing
+	state              *uint32           // dword_5d4594_830864 - Internal state of dialog component
+	someFlag           *uint32           // dword_5d4594_831084 - Internal state being toggled when loading failed?
+	isFallbackMode     *uint32           // dword_587000_122856 - Initially true, becomes false after first dialog read success
+	isInitialized      *uint32           // dword_5d4594_831076
+	audioDriver        *ail.Driver       // dword_5d4594_831092
+	timers1            *timer.TimerGroup // 5d4594_830876
+	timers2            *timer.TimerGroup // 5d4594_830980
+	timers3            *timer.TimerGroup // 587000_81128
+	timers4            *timer.TimerGroup // 587000_122852
+	getStrings         func() *strman.StringManager
+	fallbackDir        func() string // fallback audio file name provider
+	dword830860        *uint32
+
+	newDriver  func() ail.Driver // get audio device
+	sub_43DBD0 func()            // looks like music? pair with 43DBE0
+	sub_43DBE0 func()            // looks like music? pair with 43DBD0
+	sub_43DC40 func() int        // unknown
+
+	set_dword_5d4594_831080 func(uint32)
+	get_dword_587000_93160  func() uint32
 }
 
 func (d *Dialog) GoString() string {
-	return fmt.Sprintf("Dialog{isEnabled: %v, volume: %v, fileToRead: %v, currentPlayingFile: %v, currentStream: %v, state: %v, someFlag: %v, isFallbackMode: %v, isInitialized: %v, audioDriver: %v}",
-		*d.isEnabled, *d.volume, *d.fileToRead, *d.currentPlayingFile, *d.currentStream, *d.state, *d.someFlag, *d.isFallbackMode, *d.isInitialized, *d.audioDriver)
+	return fmt.Sprintf("Dialog{dir: %v, isEnabled: %v, volume: %v, fileToRead: %v, currentPlayingFile: %v, currentStream: %v, state: %v, someFlag: %v, isFallbackMode: %v, isInitialized: %v, audioDriver: %v}",
+		d.dir, *d.isEnabled, d.volume, d.fileToRead, d.currentPlayingFile, d.currentStream, *d.state, *d.someFlag, *d.isFallbackMode, *d.isInitialized, *d.audioDriver)
 }
 
-func Get_dword_587000_122848() int {
-	return int(*Instance.isEnabled)
+func (d *Dialog) IsInitialized() bool {
+	return *d.isInitialized != 0
 }
 
-func Get_dword_5d4594_831088() ail.Stream {
-	return ail.Stream(*Instance.currentStream)
+func (d *Dialog) State() int {
+	return int(*d.state)
 }
 
-func Set_dword_5d4594_831088(v ail.Stream) {
-	*Instance.currentStream = v
+func (d *Dialog) FileToRead() string {
+	return d.fileToRead
 }
 
-func Get_dword_587000_122856() int {
-	return int(*Instance.isFallbackMode)
+func (d *Dialog) CurrentPlayingFile() string {
+	return d.currentPlayingFile
 }
 
-func Set_dword_587000_122856(v int) {
-	*Instance.isFallbackMode = uint32(v)
+func (d *Dialog) GetStream() ail.Stream {
+	return d.currentStream
 }
 
-//export sub_44D930
-func sub_44D930() int32 {
-	if Get_dword_587000_122848() == 0 {
-		return 0
+func (d *Dialog) SetStream(v ail.Stream) {
+	d.currentStream = v
+}
+
+func (d *Dialog) getDriver() ail.Driver {
+	return *d.audioDriver
+}
+
+func (d *Dialog) IsFallbackMode() int {
+	return int(*d.isFallbackMode)
+}
+
+func (d *Dialog) Sub_44D930() bool {
+	if *d.isEnabled == 0 {
+		return false
 	}
-	if *Instance.fileToRead != nil || Get_dword_5d4594_831088() != 0 {
+	if d.fileToRead != "" || d.GetStream() != 0 {
+		return true
+	}
+	return false
+}
+
+func (d *Dialog) Nox_xxx_WorkerHurt_44D810() int32 {
+	if *d.isInitialized != 0 {
 		return 1
 	}
-	return 0
-}
-
-func Sub_44D930() bool {
-	return sub_44D930() != 0
-}
-
-func bool2int(b bool) int {
-	if b {
-		return 1
+	*d.audioDriver = d.newDriver()
+	if *d.audioDriver != 0 {
+		*d.isEnabled = 1
+	} else {
+		*d.isEnabled = 0
 	}
-	return 0
-}
+	d.timers1.Init()
+	d.timers1.Timers[0].SetParams(uint32(0x1F4), uint32(0x4000))
+	*d.state = 0
+	d.currentPlayingFile = ""
+	d.fileToRead = ""
+	d.set_dword_5d4594_831080(0)
+	*d.someFlag = 0
+	*d.isInitialized = 1
 
-func Nox_xxx_WorkerHurt_44D810() int32 {
-	if *Instance.isInitialized != 0 {
-		return 1
-	}
-	*Instance.audioDriver = ail.Driver(Sub_43F130())
-	*Instance.isEnabled = uint32(bool2int(*Instance.audioDriver != 0))
-	ptr_830876 := Get_counter_5d4594_830876()
-	ptr_830876.Init()
-	(&ptr_830876.Timers[0]).SetParams(uint32(0x1F4), uint32(0x4000))
-	*Instance.state = 0
-	*Instance.currentPlayingFile = nil
-	*Instance.fileToRead = nil
-	Set_dword_5d4594_831080(0)
-	*Instance.someFlag = 0
-	*Instance.isInitialized = 1
-
-	v, res := GetStringManager().GetVariantInFile("Con03B.scr:WorkerHurt", "C:\\NoxPost\\src\\client\\Audio\\AudDiag.c")
-	if res && v.Str2 != "" {
-		Nox_xxx_playDialogFile_44D900(InternCStr(v.Str2), 0)
+	v, ok := d.getStrings().GetVariantInFile("Con03B.scr:WorkerHurt", "C:\\NoxPost\\src\\client\\Audio\\AudDiag.c")
+	if ok && v.Str2 != "" {
+		d.PlayFile(v.Str2, 0)
 	}
 	return 1
 }
 
-func Sub_44D8F0() {
-	*Instance.fileToRead = nil
-	*Instance.currentPlayingFile = nil
+func (d *Dialog) Sub_44D8F0() {
+	d.fileToRead = ""
+	d.currentPlayingFile = ""
 }
 
-func Sub_44D5C0(s ail.Stream, a2 int) {
+func (d *Dialog) Sub_44D5C0(s ail.Stream, a2 int) {
 	if s != 0 {
-		v2 := (Get_counter_587000_81128_ptr().Timers[0].Current >> 16) *
-			((Get_counter_5d4594_830876().Timers[0].Current >> 16) *
-				((Get_counter_5d4594_830980().Timers[0].Current >> 16) *
+		v2 := (d.timers3.Timers[0].Current >> 16) *
+			((d.timers1.Timers[0].Current >> 16) *
+				((d.timers2.Timers[0].Current >> 16) *
 					uint32(a2) /
 					0x4000) /
 				0x4000) /
 			0x4000
-		Get_counter_5d4594_830876().Timers[0].Flags &= 0xFFFFFFFD
-		Get_counter_587000_122852_ptr().Timers[0].Flags &= 0xFFFFFFFD
+		d.timers1.Timers[0].Flags &= 0xFFFFFFFD
+		d.timers4.Timers[0].Flags &= 0xFFFFFFFD
 		s.SetVolume(int(127 * v2 / 100))
 	}
 }
 
-func Sub_44D3A0() {
-	if *Instance.isInitialized == 0 {
+func (d *Dialog) Sub_44D3A0() {
+	if *d.isInitialized == 0 {
 		return
 	}
-	timer_830876_ptr := Get_counter_5d4594_830876()
-	timer_830980_ptr := Get_counter_5d4594_830980()
-	audioStream2 := Get_dword_5d4594_831088()
-	switch *Instance.state {
+	audioStream2 := d.GetStream()
+	switch *d.state {
 	case 0:
-		if *Instance.fileToRead != nil && *Instance.isEnabled != 0 {
-			if !sub_44D660(GoString(*Instance.fileToRead)) {
-				*Instance.fileToRead = nil
-			} else if *Instance.isFallbackMode == 0 || Get_dword_587000_93160() == 0 || *Instance.someFlag != 0 {
-				*Instance.state = 2
+		if d.fileToRead != "" && *d.isEnabled != 0 {
+			if !d.playFile(d.fileToRead) {
+				d.fileToRead = ""
+			} else if *d.isFallbackMode == 0 || d.get_dword_587000_93160() == 0 || *d.someFlag != 0 {
+				*d.state = 2
 			} else {
-				*Instance.someFlag = 1
-				Sub_43DBD0()
-				*Instance.state = 1
+				*d.someFlag = 1
+				d.sub_43DBD0()
+				*d.state = 1
 			}
-		} else if *Instance.someFlag != 0 {
-			Sub_43DBE0()
-			*Instance.someFlag = 0
+		} else if *d.someFlag != 0 {
+			d.sub_43DBE0()
+			*d.someFlag = 0
 		}
 	case 1:
-		if Sub_43DC40() == 0 {
-			*Instance.state = 2
+		if d.sub_43DC40() == 0 {
+			*d.state = 2
 		}
 	case 2:
-		(&timer_830876_ptr.Timers[0]).SetRaw(0x4000)
-		if sub_44D7E0(int(*Instance.volume)) == 0 {
-			*Instance.state = 0
-			*Instance.fileToRead = nil
+		d.timers1.Timers[0].SetRaw(0x4000)
+		if d.sub_44D7E0(int(d.volume)) == 0 {
+			*d.state = 0
+			d.fileToRead = ""
 		} else {
-			*Instance.state = 3
-			*Instance.currentPlayingFile = *Instance.fileToRead
-			Set_dword_5d4594_830860(*Instance.volume)
+			*d.state = 3
+			d.currentPlayingFile = d.fileToRead
+			*d.dword830860 = d.volume
 		}
 	case 3:
-		if *Instance.isEnabled == 0 || *Instance.currentPlayingFile == nil || *Instance.fileToRead != *Instance.currentPlayingFile || Get_dword_5d4594_831088() == 0 || Get_dword_5d4594_831088().Status() == 2 {
-			*Instance.state = 4
-			(&timer_830876_ptr.Timers[0]).SetInterp(uint32(0))
+		if *d.isEnabled == 0 || d.currentPlayingFile == "" || d.fileToRead != d.currentPlayingFile || d.GetStream() == 0 || d.GetStream().Status() == 2 {
+			*d.state = 4
+			d.timers1.Timers[0].SetInterp(uint32(0))
 		}
 	case 4:
-		if audioStream2 == 0 || audioStream2.Status() == 2 || (timer_830876_ptr.Timers[0].Current&0xFFFF0000) == 0 {
-			sub_44D640()
-			*Instance.state = 0
-			if *Instance.someFlag != 0 {
-				Sub_43DBE0()
-				*Instance.someFlag = 0
+		if audioStream2 == 0 || audioStream2.Status() == 2 || (d.timers1.Timers[0].Current&0xFFFF0000) == 0 {
+			d.sub_44D640()
+			*d.state = 0
+			if *d.someFlag != 0 {
+				d.sub_43DBE0()
+				*d.someFlag = 0
 			}
-			if *Instance.currentPlayingFile == *Instance.fileToRead {
-				*Instance.fileToRead = nil
+			if d.currentPlayingFile == d.fileToRead {
+				d.fileToRead = ""
 			}
 		}
 	}
-	timer_830980_ptr.Update()
-	timer_830876_ptr.Update()
-	if audioStream2 != 0 && (Get_counter_587000_81128_ptr().Timers[0].Flags&2 != 0 || timer_830876_ptr.Timers[0].Flags&2 != 0 || timer_830980_ptr.Timers[0].Flags&2 != 0) {
-		Sub_44D5C0(audioStream2, int(Get_dword_5d4594_830860()))
+	d.timers2.Update()
+	d.timers1.Update()
+	if audioStream2 != 0 && (d.timers3.Timers[0].Flags&2 != 0 || d.timers1.Timers[0].Flags&2 != 0 || d.timers2.Timers[0].Flags&2 != 0) {
+		d.Sub_44D5C0(audioStream2, int(*d.dword830860))
 	}
 }
 
-func Sub_44D8C0() {
-	if *Instance.isInitialized != 0 {
-		Sub_44D8F0()
-		sub_44D640()
-		Sub_44D3A0()
-		*Instance.isInitialized = 0
+func (d *Dialog) Sub_44D8C0() {
+	if *d.isInitialized != 0 {
+		d.Sub_44D8F0()
+		d.sub_44D640()
+		d.Sub_44D3A0()
+		*d.isInitialized = 0
 	}
 }
 
-func sub_44D640() {
-	if s := Get_dword_5d4594_831088(); s != 0 {
+func (d *Dialog) sub_44D640() {
+	if s := d.GetStream(); s != 0 {
 		s.Close()
-		Set_dword_5d4594_831088(0)
+		d.SetStream(0)
 	}
 }
 
-func sub_44D660(name string) bool {
-	sub_44D640()
-	path := filepath.Join("dialog", name)
-	*Instance.isFallbackMode = 0
+func (d *Dialog) playFile(name string) bool {
+	d.sub_44D640()
+	*d.isFallbackMode = 0
+	path := filepath.Join(d.dir, name)
 	if !strings.Contains(path, ".") {
 		path += ".wav"
 	}
-	s := get_dword_5d4594_831092().OpenStream(path, 51200)
-	Set_dword_5d4594_831088(s)
+	s := d.getDriver().OpenStream(path)
+	d.SetStream(s)
 	if s != 0 {
 		return true
 	}
-	v4 := Sub_413890()
-	if v4 == "" {
-		return s != 0
+	if d.fallbackDir == nil {
+		return true
 	}
-	*Instance.isFallbackMode = 1
-	path2 := filepath.Join(v4, path)
-	s = get_dword_5d4594_831092().OpenStream(path2, 51200)
-	Set_dword_5d4594_831088(s)
+	fdir := d.fallbackDir()
+	if fdir == "" {
+		return true
+	}
+	*d.isFallbackMode = 1
+	path2 := filepath.Join(fdir, path)
+	s = d.getDriver().OpenStream(path2)
+	d.SetStream(s)
 	return s != 0
 }
 
-func Nox_xxx_playDialogFile_44D900(a1 *byte, a2 int) int {
-	var (
-		v2 int
-	)
-	if !(*Instance.isEnabled != 0 && a1 != nil) {
+func (d *Dialog) PlayFile(file string, vol int) int {
+	if *d.isEnabled == 0 || file == "" {
 		return 1
 	}
-	v2 = a2
-	if a2 > 100 {
-		v2 = 100
+	if vol > 100 {
+		vol = 100
 	}
-	*Instance.fileToRead = a1
-	*Instance.volume = uint32(v2)
+	d.fileToRead = file
+	d.volume = uint32(vol)
 	return 1
 }
 
-func sub_44D7E0(a1 int) int {
-	s := Get_dword_5d4594_831088()
+func (d *Dialog) sub_44D7E0(a1 int) int {
+	s := d.GetStream()
 	if s == 0 {
 		return 0
 	}
-	Sub_44D5C0(s, a1)
+	d.Sub_44D5C0(s, a1)
 	s.Start()
 	return 1
-}
-
-func get_dword_5d4594_831092() ail.Driver {
-	return ail.Driver(*Instance.audioDriver)
 }
