@@ -2,28 +2,19 @@
 
 package ail
 
-/*
-#include <stdint.h>
-#define MINIMP3_ONLY_MP3
-#define MINIMP3_NO_SIMD
-#include "../mp3/minimp3.h"
-*/
-import "C"
 import (
-	"encoding/binary"
 	"fmt"
-	"io"
 	"math"
 	"os"
+	"path/filepath"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
-	"unsafe"
 
 	"github.com/timshannon/go-openal/openal"
 
 	"github.com/noxworld-dev/opennox-lib/env"
-	"github.com/noxworld-dev/opennox-lib/ifs"
 	"github.com/noxworld-dev/opennox-lib/log"
 
 	"github.com/noxworld-dev/opennox/v1/legacy/common/alloc/handles"
@@ -179,14 +170,6 @@ func (s *audioSample) EOB() {
 	}
 }
 
-type audioStreamType int
-
-const (
-	audioPCM = audioStreamType(iota + 1)
-	audioADPCM
-	audioMP3
-)
-
 type audioStream struct {
 	h Stream
 	d *audioDriver
@@ -196,72 +179,13 @@ type audioStream struct {
 	hwbuf   openal.Buffers
 	hwready int
 
-	stereo       bool
-	playbackRate uint32
-	playing      bool
+	playing bool
 
-	file      *os.File
-	filename  string
-	fileSize  int
-	chunkSize int
-	chunkPos  int
-	buffered  int
-
-	typ audioStreamType
-	pcm struct {
-		wf       waveFormat
-		position int
-	}
-	adpcm struct {
-		wf       waveFormat
-		position int
-		samples  int
-	}
-	mp3 struct {
-		wf  waveFormatMP3
-		dec C.mp3dec_t
-	}
-
-	buffer [16 * 1024 * 3]byte
+	dec audioDecoder
 }
 
 func (s *audioStream) Channels() int {
-	if s.stereo {
-		return 2
-	}
-	return 1
-}
-
-func (s *audioStream) findData() error {
-	var tmp [8]byte
-
-	s.chunkSize = 0
-	s.chunkPos = 0
-
-	for {
-		off, err := s.file.Seek(0, io.SeekCurrent)
-		if err != nil {
-			audioLog.Println(err)
-			return err
-		} else if int(off) >= s.fileSize {
-			return io.EOF
-		}
-		_, err = io.ReadFull(s.file, tmp[:])
-		if err != nil {
-			audioLog.Println("find", err)
-			return err
-		}
-		size := int(binary.LittleEndian.Uint32(tmp[4:]))
-		if string(tmp[:4]) == "data" {
-			s.chunkSize = size
-			return nil
-		}
-		_, err = s.file.Seek(int64(size), io.SeekCurrent)
-		if err != nil {
-			audioLog.Println(err)
-			return err
-		}
-	}
+	return s.dec.Channels()
 }
 
 type audioTimer struct {
@@ -270,320 +194,6 @@ type audioTimer struct {
 	dt   time.Duration
 	f    func(u uint32)
 	user uint32
-}
-
-func sat16(x int) int16 {
-	if x < math.MinInt16 {
-		return math.MinInt16
-	} else if x > math.MaxInt16 {
-		return math.MaxInt16
-	}
-	return int16(x)
-}
-
-func satindex(x int) int {
-	if x < 0 {
-		return 0
-	} else if x > 88 {
-		return 88
-	}
-	return x
-}
-
-var (
-	imaIndexTable = [16]int{-1, -1, -1, -1, 2, 4, 6, 8, -1, -1, -1, -1, 2, 4, 6, 8}
-	imaStepTable  = [89]int{
-		7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 21, 23,
-		25, 28, 31, 34, 37, 41, 45, 50, 55, 60, 66, 73, 80,
-		88, 97, 107, 118, 130, 143, 157, 173, 190, 209, 230, 253, 279,
-		307, 337, 371, 408, 449, 494, 544, 598, 658, 724, 796, 876, 963,
-		1060, 1166, 1282, 1411, 1552, 1707, 1878, 2066, 2272, 2499, 2749, 3024, 3327,
-		3660, 4026, 4428, 4871, 5358, 5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487,
-		12635, 13899, 15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767,
-	}
-)
-
-func decodeNibble(predictor int16, nibble byte, index int) int16 {
-	diff := 0
-	step := imaStepTable[index]
-
-	diff = step >> 3
-	if nibble&4 != 0 {
-		diff += step
-	}
-	if nibble&2 != 0 {
-		diff += step >> 1
-	}
-	if nibble&1 != 0 {
-		diff += step >> 2
-	}
-	if nibble&8 != 0 {
-		predictor = sat16(int(predictor) - diff)
-	} else {
-		predictor = sat16(int(predictor) + diff)
-	}
-	return predictor
-}
-
-func decodeADPCM(out []int16, data []byte) []int16 {
-	predictor := int16(data[0]) | (int16(data[1]) << 8)
-	index := int(data[2])
-
-	out = append(out, predictor)
-	for i := 4; i < len(data); i++ {
-		predictor = decodeNibble(predictor, data[i], index)
-		index = satindex(index + imaIndexTable[data[i]&15])
-		out = append(out, predictor)
-
-		predictor = decodeNibble(predictor, data[i]>>4, index)
-		index = satindex(index + imaIndexTable[data[i]>>4])
-		out = append(out, predictor)
-	}
-	return out
-}
-
-func decodeADPCMStereo(out []int16, data []byte) []int16 {
-	lpredictor := int16(data[0]) | (int16(data[1]) << 8)
-	lindex := int(data[2])
-	rpredictor := int16(data[4]) | (int16(data[5]) << 8)
-	rindex := int(data[6])
-
-	out = append(out, lpredictor, rpredictor)
-	for i := 8; i < len(data); i += 8 {
-		for j := 0; j < 4; j++ {
-			lpredictor = decodeNibble(lpredictor, data[i+j], lindex)
-			lindex = satindex(lindex + imaIndexTable[data[i+j]&15])
-			out = append(out, lpredictor)
-
-			rpredictor = decodeNibble(rpredictor, data[i+j+4], rindex)
-			rindex = satindex(rindex + imaIndexTable[data[i+j+4]&15])
-			out = append(out, rpredictor)
-
-			lpredictor = decodeNibble(lpredictor, data[i+j]>>4, lindex)
-			lindex = satindex(lindex + imaIndexTable[data[i+j]>>4])
-			out = append(out, lpredictor)
-
-			rpredictor = decodeNibble(rpredictor, data[i+j+4]>>4, rindex)
-			rindex = satindex(rindex + imaIndexTable[data[i+j+4]>>4])
-			out = append(out, rpredictor)
-		}
-	}
-	return out
-}
-
-func (s *audioStream) seek(pos int) {
-	switch s.typ {
-	case audioPCM:
-		s.pcmSeek(pos)
-	case audioADPCM:
-		s.adpcmSeek(pos)
-	case audioMP3:
-		s.mp3Seek(pos)
-	default:
-		panic("unsupported")
-	}
-}
-
-func (s *audioStream) tell() uint32 {
-	switch s.typ {
-	case audioPCM:
-		return s.pcmTell()
-	case audioADPCM:
-		return s.adpcmTell()
-	case audioMP3:
-		return s.mp3Tell()
-	default:
-		panic("unsupported")
-	}
-}
-
-func (s *audioStream) decode(out []int16, max int) uint32 {
-	switch s.typ {
-	case audioPCM:
-		return s.pcmDecode(out, max)
-	case audioADPCM:
-		return s.adpcmDecode(out, max)
-	case audioMP3:
-		return s.mp3Decode(out, max)
-	default:
-		panic("unsupported")
-	}
-}
-
-func (s *audioStream) pcmDecode(out []int16, max int) uint32 {
-	remaining := s.chunkSize - s.chunkPos
-
-	if remaining == 0 {
-		remaining = s.decodeFind()
-		if remaining == 0 {
-			return 0
-		}
-	}
-
-	if remaining/2 >= max {
-		remaining = max * 2
-	}
-
-	channels := s.Channels()
-	// TODO(dennwc): reuse
-	buf := make([]byte, remaining)
-	io.ReadFull(s.file, buf)
-	for i := 0; i+1 < len(buf); i += 2 {
-		out[i/2] = int16(binary.LittleEndian.Uint16(buf[i:]))
-	}
-	s.pcm.position += remaining / 2 / channels
-	return uint32(remaining / 2)
-}
-
-func (s *audioStream) pcmSeek(position int) {
-	// TODO
-	s.pcm.position = 0
-}
-
-func (s *audioStream) pcmTell() uint32 {
-	return uint32(s.pcm.position)
-}
-
-func (s *audioStream) decodeFind() int {
-	s.findData()
-	remaining := s.chunkSize - s.chunkPos
-	if remaining == 0 {
-		s.playing = false
-	}
-	return remaining
-}
-
-func (s *audioStream) adpcmDecode(out []int16, max int) uint32 {
-	blockSize := int(s.adpcm.wf.blockAlign)
-
-	samples := 0
-	if s.adpcm.position >= s.adpcm.samples {
-		s.playing = false
-		return 0
-	}
-
-	if s.buffered < blockSize {
-		remaining := s.chunkSize - s.chunkPos
-
-		if remaining == 0 {
-			remaining = s.decodeFind()
-			if remaining == 0 {
-				return 0
-			}
-		}
-
-		if remaining > blockSize-s.buffered {
-			remaining = blockSize - s.buffered
-		}
-		io.ReadFull(s.file, s.buffer[s.buffered:s.buffered+remaining])
-		s.buffered += remaining
-	}
-
-	if s.stereo {
-		out = decodeADPCMStereo(out[:0], s.buffer[:blockSize])
-	} else {
-		out = decodeADPCM(out[:0], s.buffer[:blockSize])
-	}
-	samples = len(out) // TODO(dennwc): is it true for stereo?
-
-	s.buffered -= blockSize
-	if s.buffered != 0 {
-		copy(s.buffer[0:], s.buffer[blockSize:blockSize+s.buffered])
-	}
-	channels := s.Channels()
-	if samples/channels+s.adpcm.position >= s.adpcm.samples {
-		samples = (s.adpcm.samples - s.adpcm.position) * channels
-	}
-	s.adpcm.position += samples / channels
-	return uint32(samples)
-}
-
-func (s *audioStream) adpcmSeek(position int) {
-	blockSize := int(s.adpcm.wf.blockAlign)
-	channels := s.Channels()
-	samplesPerBlock := (blockSize/channels - 4) * 2
-	blocks := position / samplesPerBlock
-	s.adpcm.position = 0
-
-	for s.adpcm.position < position {
-		s.findData()
-		if s.chunkSize == 0 {
-			break
-		}
-		chunkBlocks := s.chunkSize / blockSize
-		if blocks < chunkBlocks {
-			s.file.Seek(int64(blocks*blockSize), io.SeekCurrent)
-			s.adpcm.position += blocks * samplesPerBlock
-			break
-		} else {
-			s.file.Seek(int64(s.chunkSize), io.SeekCurrent)
-			s.adpcm.position += chunkBlocks * samplesPerBlock
-		}
-	}
-
-	// TODO seek within an ADPCM block
-}
-
-func (s *audioStream) adpcmTell() uint32 {
-	return uint32(s.adpcm.position)
-}
-
-func (s *audioStream) mp3Decode(out []int16, max int) uint32 {
-	remaining := s.chunkSize - s.chunkPos
-	samples := 0
-	var info C.mp3dec_frame_info_t
-
-	if s.buffered < len(s.buffer) {
-		if remaining == 0 && s.buffered == 0 {
-			remaining = s.decodeFind()
-			if remaining == 0 {
-				return 0
-			}
-		}
-		if remaining != 0 {
-			if remaining > len(s.buffer)-s.buffered {
-				remaining = len(s.buffer) - s.buffered
-			}
-			io.ReadFull(s.file, s.buffer[s.buffered:s.buffered+remaining])
-			s.buffered += remaining
-		}
-	}
-
-	for {
-		samples = int(C.mp3dec_decode_frame(&s.mp3.dec, (*C.uchar)(unsafe.Pointer(&s.buffer[0])), C.int(s.buffered), (*C.short)(unsafe.Pointer(&out[0])), &info))
-		if samples != 0 {
-			break
-		}
-		if remaining == 0 {
-			remaining = s.decodeFind()
-			if remaining == 0 {
-				return 0
-			}
-		}
-		if remaining != 0 {
-			if remaining > len(s.buffer)-s.buffered {
-				remaining = len(s.buffer) - s.buffered
-			}
-			io.ReadFull(s.file, s.buffer[s.buffered:s.buffered+remaining])
-			s.buffered += remaining
-		}
-	}
-
-	frameBytes := int(info.frame_bytes)
-	s.buffered -= frameBytes
-	if s.buffered != 0 {
-		copy(s.buffer[0:], s.buffer[frameBytes:frameBytes+s.buffered])
-	}
-
-	return uint32(samples)
-}
-
-func (s *audioStream) mp3Seek(position int) {
-	C.mp3dec_init(&s.mp3.dec)
-}
-
-func (s *audioStream) mp3Tell() uint32 {
-	return 0
 }
 
 func audioCheckError() bool {
@@ -676,117 +286,16 @@ func (s Sample) Release() {
 	}
 }
 
-func audioOpenStream(path string) (*audioStream, error) {
-	f, err := ifs.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	s := &audioStream{file: f, filename: path}
-	if err = s.open(); err != nil {
-		_ = f.Close()
-		return nil, err
-	}
-	return s, nil
-}
-
-type waveFormat struct {
-	format         uint16
-	channels       uint16
-	samplesPerSec  uint32
-	avgBytesPerSec uint32
-	blockAlign     uint16
-}
-
-type waveFormatMP3 struct {
-	waveFormat
-	bitsPerSample  uint16
-	size           uint16
-	id             uint16
-	flags          uint32
-	blockSize      uint16
-	framesPerBlock uint16
-	codecDelay     uint16
-}
-
-func (s *audioStream) open() error {
-	var tmp [256]byte
-	_, err := io.ReadFull(s.file, tmp[:20])
-	if err != nil {
-		return err
-	}
-	if magic := string(tmp[0:4]); magic != "RIFF" {
-		return fmt.Errorf("invalid audio file magic: %q", magic)
-	}
-	s.fileSize = int(binary.LittleEndian.Uint32(tmp[4:8]))
-	if str := string(tmp[8:12]); str != "WAVE" {
-		return fmt.Errorf("invalid audio file section: %q", str)
-	}
-	// +12
-	size := int(binary.LittleEndian.Uint32(tmp[16:20]))
-	if str := string(tmp[12:16]); str != "fmt " {
-		return fmt.Errorf("invalid audio file section 2: %q", str)
-	}
-	if size < 14 || size > cap(tmp) {
-		return fmt.Errorf("invalid audio header size: %d", size)
-	}
-	_, err = io.ReadFull(s.file, tmp[:size])
-	if err != nil {
-		return err
-	}
-	wf := waveFormat{
-		format:         binary.LittleEndian.Uint16(tmp[0:2]),
-		channels:       binary.LittleEndian.Uint16(tmp[2:4]),
-		samplesPerSec:  binary.LittleEndian.Uint32(tmp[4:8]),
-		avgBytesPerSec: binary.LittleEndian.Uint32(tmp[8:12]),
-		blockAlign:     binary.LittleEndian.Uint16(tmp[12:14]),
-	}
-	switch wf.format {
-	case 0x01: // PCM
-		s.typ = audioPCM
-		s.playbackRate = wf.samplesPerSec
-		s.stereo = wf.channels > 1
-		s.pcm.wf = wf
-		audioLog.Printf("PCM stream: %q, %d channels", s.filename, wf.channels)
-		return nil
-	case 0x11: // ADPCM
-		s.typ = audioADPCM
-		s.playbackRate = wf.samplesPerSec
-		s.stereo = wf.channels > 1
-		s.adpcm.wf = wf
-		_, err = io.ReadFull(s.file, tmp[:12])
-		if err != nil {
-			return err
-		}
-		if str := string(tmp[0:4]); str != "fact" {
-			return fmt.Errorf("invalid ADPCM file section: %q", str)
-		}
-		if sz := binary.LittleEndian.Uint32(tmp[4:8]); sz != 4 {
-			return fmt.Errorf("unsupported ADPCM size: %q", sz)
-		}
-		s.adpcm.samples = int(binary.LittleEndian.Uint32(tmp[8:12]))
-		audioLog.Printf("ADPCM stream: %q, %d channels", s.filename, wf.channels)
-		return nil
-	case 0x55: // MP3
-		if size < 14+16 {
-			return fmt.Errorf("invalid MP3 header size: %d", size)
-		}
-		s.typ = audioMP3
-		wf3 := waveFormatMP3{waveFormat: wf}
-		wf3.bitsPerSample = binary.LittleEndian.Uint16(tmp[14:16])
-		wf3.size = binary.LittleEndian.Uint16(tmp[16:18])
-		wf3.id = binary.LittleEndian.Uint16(tmp[18:20])
-		wf3.flags = binary.LittleEndian.Uint32(tmp[20:24])
-		wf3.blockSize = binary.LittleEndian.Uint16(tmp[24:26])
-		wf3.framesPerBlock = binary.LittleEndian.Uint16(tmp[26:28])
-		wf3.codecDelay = binary.LittleEndian.Uint16(tmp[28:30])
-		s.playbackRate = wf3.samplesPerSec
-		s.stereo = wf3.channels > 1
-		s.mp3.wf = wf3
-		C.mp3dec_init(&s.mp3.dec)
-		audioLog.Printf("MP3 stream: %q, %d channels", s.filename, wf3.channels)
-		return nil
+func openAudio(path string) (audioDecoder, error) {
+	switch strings.ToLower(filepath.Ext(path)) {
 	default:
-		return fmt.Errorf("unsupported format: 0x%x", wf.format)
+		return nil, fmt.Errorf("unsupported audio file format: %s", path)
+	case ".wav":
+		r, err := openWav(path)
+		if err != nil {
+			return nil, err
+		}
+		return r, nil
 	}
 }
 
@@ -803,13 +312,17 @@ func (dig Driver) OpenStream(name string) Stream {
 		return 0
 	}
 
-	s, err := audioOpenStream(name)
+	dec, err := openAudio(name)
 	if err != nil {
 		audioLog.Println(err)
 		return 0
 	}
-	s.d = d
-	s.h = Stream(handles.New())
+
+	s := &audioStream{
+		d:   d,
+		h:   Stream(handles.New()),
+		dec: dec,
+	}
 	s.source = openal.NewSource()
 	if !audioCheckError() {
 		return 0
@@ -846,6 +359,7 @@ func (h Stream) Close() error {
 	}
 	s.d.mu.Lock()
 	s.playing = false
+	s.dec.Close()
 	s.d.mu.Unlock()
 	return nil
 }
@@ -1174,11 +688,7 @@ func (h Stream) SetPosition(offset int) {
 	}
 	s.d.mu.Lock()
 	defer s.d.mu.Unlock()
-	s.chunkSize = 0
-	s.chunkPos = 0
-	s.buffered = 0
-	s.file.Seek(12, io.SeekStart)
-	s.seek(offset)
+	s.dec.Seek(offset)
 }
 
 func (h Stream) SetVolume(volume int) {
@@ -1311,7 +821,7 @@ func (h Stream) Position() int {
 	if s == nil {
 		return -1
 	}
-	return int(s.tell())
+	return s.dec.Position()
 }
 
 func (h Stream) Status() int {
@@ -1354,7 +864,7 @@ func (s *audioSample) playADPCM(data []byte) {
 	if s.stereo {
 		decoded = decodeADPCMStereo(decoded, data)
 	} else {
-		decoded = decodeADPCM(decoded, data)
+		decoded = decodeADPCMMono(decoded, data)
 	}
 
 	s.hwready--
@@ -1425,7 +935,8 @@ func (s *audioStream) work() {
 	var buffer [16 * 1024 * 3]int16
 	channels := s.Channels()
 	// We need to queue 100ms of audio data.
-	minSamples := int(s.playbackRate) * channels / 10
+	sampleRate := s.dec.SampleRate()
+	minSamples := sampleRate * channels / 10
 
 	s.unqueueBuffers()
 
@@ -1433,7 +944,10 @@ func (s *audioStream) work() {
 		offset := 0
 
 		for offset < minSamples {
-			samples := s.decode(buffer[offset:], minSamples*2-offset)
+			samples, ok := s.dec.Decode(buffer[offset : minSamples*2])
+			if !ok {
+				s.playing = false
+			}
 			if samples == 0 {
 				break
 			}
@@ -1447,11 +961,11 @@ func (s *audioStream) work() {
 		s.hwready--
 
 		format := openal.FormatMono16
-		if s.stereo {
+		if channels != 1 {
 			format = openal.FormatStereo16
 		}
 
-		s.hwbuf[s.hwready].SetDataInt16(format, buffer[:offset], int32(s.playbackRate))
+		s.hwbuf[s.hwready].SetDataInt16(format, buffer[:offset], int32(sampleRate))
 		if !audioCheckError() {
 			s.hwready++
 			return
