@@ -3,8 +3,6 @@ package legacy
 /*
 #include <stdint.h>
 
-extern uint32_t dword_5d4594_816092;
-extern uint32_t dword_5d4594_816364;
 extern uint32_t dword_5d4594_816376;
 extern uint32_t dword_5d4594_830864;
 extern uint32_t dword_5d4594_831076;
@@ -54,9 +52,9 @@ func initDialog() {
 		func() ail.Driver {
 			return Sub_43F130()
 		},
-		Sub_43DBD0,
-		Sub_43DBE0,
-		Sub_43DC40,
+		func() { MusicModule.Sub_43DBD0() },
+		func() { MusicModule.Sub_43DBE0() },
+		func() int { return MusicModule.Sub_43DC40() },
 		Set_dword_5d4594_831080,
 		func() uint32 { return uint32(Get_dword_587000_93160()) },
 	)

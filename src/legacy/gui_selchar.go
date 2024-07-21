@@ -156,10 +156,6 @@ func Sub_41A000(a1 string, a2 *Nox_savegame_xxx) int {
 	defer StrFree(cstr)
 	return int(C.sub_41A000(cstr, (*C.nox_savegame_xxx)(unsafe.Pointer(a2))))
 }
-func Sub_43D9E0(a1 unsafe.Pointer) {
-	C.sub_43D9E0((*C.int4)(a1))
-}
-
 func Get_sub_4A18E0() unsafe.Pointer {
 	return C.sub_4A18E0
 }

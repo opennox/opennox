@@ -5,7 +5,6 @@ package legacy
 void sub_4519C0();
 int sub_495430();
 void sub_44D3A0();
-void sub_43D440();
 void nox_xxx_sprite_49C4F0();
 void sub_45D810();
 void sub_49A630();
@@ -116,10 +115,6 @@ func Sub_4519C0() {
 
 func Sub_495430() {
 	C.sub_495430()
-}
-
-func Sub_43D440() {
-	C.sub_43D440()
 }
 
 func Sub_479280() {

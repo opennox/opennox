@@ -17,8 +17,6 @@ package legacy
 extern unsigned int dword_5d4594_2650652;
 extern void* dword_587000_81128;
 extern unsigned int dword_587000_93156;
-extern unsigned int dword_5d4594_816340;
-extern unsigned int dword_5d4594_816348;
 
 extern nox_gui_animation* nox_wnd_xxx_1309740;
 */
@@ -123,10 +121,6 @@ func Sub_4870A0() {
 
 func Sub_431290() {
 	C.sub_431290()
-}
-
-func Sub_43D990() {
-	C.sub_43D990()
 }
 
 func Nox_xxx_servSetPlrLimit_409F80(v int) {

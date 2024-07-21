@@ -7,7 +7,7 @@ import (
 
 func (s noxScriptNS) Music(music int, volume int) {
 	if noxflags.HasGame(noxflags.GameModeCoop) {
-		legacy.Sub_43D9B0(music, volume)
+		legacy.Sub_43D9B0(uint32(music), uint32(volume))
 	} else {
 		s.s.NetMusic(music, volume)
 	}

@@ -105,9 +105,6 @@ func Nox_client_lockScreenBriefing_450160(a1 int, a2 int, a3 int) {
 func Sub_43E8C0(a1 int) {
 	C.sub_43E8C0(C.int(a1))
 }
-func Sub_43D9B0(a1 int, a2 int) {
-	C.sub_43D9B0(C.int(a1), C.int(a2))
-}
 func Sub_4D6F80(a1 int) {
 	C.sub_4D6F80(C.int(a1))
 }

@@ -983,8 +983,7 @@ func sub_4505B0() {
 }
 
 func sub_43DDA0() {
-	*memmap.PtrUint32(0x5D4594, 816344) = 0
-	legacy.Sub_43D9E0(memmap.PtrOff(0x5D4594, 816060))
+	legacy.MusicModule.Sub_43DDA0()
 }
 
 func sub_450580() {

@@ -146,5 +146,6 @@ func InitBlobData() {
 		Ptr_sub_54A850:                          unsafe.Pointer(C.sub_54A850),
 		Ptr_sub_54A950:                          unsafe.Pointer(C.sub_54A950),
 	})
+	initMusic()
 	initDialog()
 }

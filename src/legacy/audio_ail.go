@@ -9,25 +9,20 @@ package legacy
 
 void sub_43E910(int a1);
 void sub_43E8E0(int a1);
-void sub_43D2D0();
 void sub_43EDB0(HSAMPLE a1);
 int sub_43EE00(void* a1);
 int sub_43F060(uint32_t* a1);
 int sub_43F0E0(uint32_t* a1);
 char* sub_413890();
-void sub_43D3C0(int a1, int a2);
 int sub_486640(void* a1, int a2);
 int nox_xxx_parseSoundSetBin_424170(char* a1);
 
 extern void* dword_587000_127004;
-extern uint32_t dword_5d4594_816092;
-extern uint32_t dword_5d4594_816364;
 extern uint32_t dword_5d4594_816376;
 extern uint32_t dword_5d4594_831084;
 extern uint32_t dword_5d4594_831092;
 
 void sub_43DC00();
-int sub_43D8E0();
 void sub_44D960();
 void sub_453050();
 int sub_451850(int a2, void* a3);
@@ -46,23 +41,20 @@ import (
 )
 
 var (
-	Sub_43EA20                    func(a1 unsafe.Pointer) int
-	Sub_43E9F0                    func()
-	Sub_43E940                    func(a1 unsafe.Pointer) int
-	Sub_43EFD0                    func(a1 unsafe.Pointer) int
-	Sub_43EC10                    func() int
-	Sub_43F130                    func() ail.Driver
-	Sub_43ED00                    func(a1p unsafe.Pointer) int
-	Sub_43D650                    func()
-	Sub_43D680                    func()
-	Sub_43D6A0                    func()
-	Sub_44D640                    func()
-	Sub_44D7E0                    func(a1 int) int
-	Nox_xxx_musicStartPlay_43D6C0 func(a1p unsafe.Pointer) int
-	Sub_44D660                    func(a1 string) bool
-	Sub_43F060                    func(a1p unsafe.Pointer) int
-	Sub_43EC30                    func(a1 unsafe.Pointer) int
-	Sub_43ECB0                    func(a1 unsafe.Pointer) int
+	Sub_43EA20 func(a1 unsafe.Pointer) int
+	Sub_43E9F0 func()
+	Sub_43E940 func(a1 unsafe.Pointer) int
+	Sub_43EFD0 func(a1 unsafe.Pointer) int
+	Sub_43EC10 func() int
+	Sub_43F130 func() ail.Driver
+	Sub_43ED00 func(a1p unsafe.Pointer) int
+	Sub_43D6A0 func()
+	Sub_44D640 func()
+	Sub_44D7E0 func(a1 int) int
+	Sub_44D660 func(a1 string) bool
+	Sub_43F060 func(a1p unsafe.Pointer) int
+	Sub_43EC30 func(a1 unsafe.Pointer) int
+	Sub_43ECB0 func(a1 unsafe.Pointer) int
 )
 
 type _WIN32_FIND_DATAA = C.struct__WIN32_FIND_DATAA
@@ -201,16 +193,6 @@ func sub_43ED00(a1p *C.uint32_t) int {
 	return Sub_43ED00(unsafe.Pointer(a1p))
 }
 
-//export sub_43D650
-func sub_43D650() {
-	Sub_43D650()
-}
-
-//export sub_43D680
-func sub_43D680() {
-	Sub_43D680()
-}
-
 //export sub_43D6A0
 func sub_43D6A0() {
 	Sub_43D6A0()
@@ -224,11 +206,6 @@ func sub_44D640() {
 //export sub_44D7E0
 func sub_44D7E0(a1 int) int {
 	return Sub_44D7E0(a1)
-}
-
-//export nox_xxx_musicStartPlay_43D6C0
-func nox_xxx_musicStartPlay_43D6C0(a1p *C.int) int {
-	return Nox_xxx_musicStartPlay_43D6C0(unsafe.Pointer(a1p))
 }
 
 //export sub_44D660
@@ -249,10 +226,6 @@ func sub_43EC30(a1p unsafe.Pointer) int {
 //export sub_43ECB0
 func sub_43ECB0(a1p unsafe.Pointer) int {
 	return Sub_43ECB0(unsafe.Pointer(a1p))
-}
-
-func Sub_43D2D0() {
-	C.sub_43D2D0()
 }
 
 //export sub_486620
@@ -304,28 +277,12 @@ func Sub_43EDB0(v ail.Sample) {
 	C.sub_43EDB0((C.HSAMPLE)(unsafe.Pointer(v)))
 }
 
-func Get_dword_5d4594_816364() ail.Stream {
-	return ail.Stream(C.dword_5d4594_816364)
-}
-
-func Set_dword_5d4594_816364(v ail.Stream) {
-	C.dword_5d4594_816364 = C.uint(v)
-}
-
-func Set_dword_5d4594_816092(v int) {
-	C.dword_5d4594_816092 = C.uint(v)
-}
-
 func Sub_413890() string {
 	return GoString(C.sub_413890())
 }
 
 func Nox_xxx_parseSoundSetBin_424170(path string) int {
 	return int(C.nox_xxx_parseSoundSetBin_424170(internCStr(path)))
-}
-
-func Sub_43D8E0() {
-	C.sub_43D8E0()
 }
 
 func Sub_43DC00() {
@@ -344,6 +301,10 @@ func Get_dword_5d4594_816376() ail.Driver {
 	return ail.Driver(C.dword_5d4594_816376)
 }
 
+func Set_dword_5d4594_816376(drv ail.Driver) {
+	C.dword_5d4594_816376 = C.uint(drv)
+}
+
 //export sub_486320
 func sub_486320(a1 unsafe.Pointer, a2 int) unsafe.Pointer {
 	(*timer.Timer)(a1).SetRaw(uint32(a2))
@@ -359,10 +320,6 @@ func sub_486350(p unsafe.Pointer, a2 int) int {
 //export sub_4863B0
 func sub_4863B0(p unsafe.Pointer) int {
 	return bool2int((*timer.Timer)(p).Update())
-}
-
-func Sub_43D3C0(s ail.Stream, a2 int) {
-	C.sub_43D3C0(C.int(s), C.int(a2))
 }
 
 func Sub_486640(a1 unsafe.Pointer, a2 int) int {

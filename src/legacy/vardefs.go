@@ -880,9 +880,6 @@ func Get_dword_587000_93156() int {
 func Get_dword_587000_93160() int {
 	return int(C.dword_587000_93160)
 }
-func Set_dword_587000_93160(v int) {
-	C.dword_587000_93160 = C.uint(v)
-}
 func Get_dword_5d4594_816348() int {
 	return int(C.dword_5d4594_816348)
 }

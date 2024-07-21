@@ -112,7 +112,7 @@ obj_412ae0_t* nox_xxx_modifNext_4133C0(obj_412ae0_t* a1);
 int sub_4133D0(nox_object_t* a1);
 int sub_413420(char a1);
 int sub_4134D0();
-int sub_4137E0();
+void sub_4137E0();
 char* sub_413890();
 void sub_4138E0(int a1);
 void sub_413900(int a1);

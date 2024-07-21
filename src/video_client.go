@@ -27,9 +27,9 @@ func (c *Client) DrawGeneral(a1 bool) error {
 		return nil
 	}
 	legacy.Sub_431290()
-	legacy.Sub_43DBD0()
+	legacy.MusicModule.Sub_43DBD0()
 	legacy.Dialogs.Sub_44D8F0()
-	for legacy.Sub_43DC40() != 0 || legacy.Dialogs.Sub_44D930() {
+	for legacy.MusicModule.Sub_43DC40() != 0 || legacy.Dialogs.Sub_44D930() {
 		c.sub4312C0()
 	}
 	v12 := sub_48B3E0(false)
@@ -37,7 +37,7 @@ func (c *Client) DrawGeneral(a1 bool) error {
 
 	c.playMovieFile(movieFilesStack[0])
 
-	legacy.Sub_43DBE0()
+	legacy.MusicModule.Sub_43DBE0()
 	//inpHandler.AcquireMouse()
 	sub_48B3E0(v12)
 	sub_4B05D0()
