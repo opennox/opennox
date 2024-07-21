@@ -78,17 +78,8 @@ func NewModule(
 	PlatformTicks func() uint64,
 ) *Module {
 	m := &Module{
-		dir:                 dir,
-		currentPlaying:      MusicState{},
-		dword_5d4594_816356: 0,
-		counterValue:        -1,
-		lastUpdatedTick:     0,
-		timer:               timer.TimerGroup{},
-		block_idx:           0,
-		blocks:              [2]MusicBlock{},
-		playingStream:       0,
-		dword_5d4594_816344: 0,
-		block_5d4594_816060: MusicState{},
+		dir:          dir,
+		counterValue: -1,
 
 		dword_5d4594_816368:      dword_5d4594_816368,
 		dword_5d4594_816372:      dword_5d4594_816372,
@@ -132,28 +123,30 @@ func (m *Module) Sub_43D2D0() {
 
 	if m.playingStream != 0 {
 		if (*m.ptr_counter_587000_81128).Timers[0].Flags&2 != 0 || m.timer.Timers[0].Flags&2 != 0 || m.counter_5d4594_816244.Timers[0].Flags&2 != 0 {
-			m.Sub_43D3C0(m.playingStream, m.currentPlaying.Volume)
+			m.changeVolume(m.playingStream, m.currentPlaying.Volume)
 		}
 	}
 }
 
-func (m *Module) Sub_43D3C0(a1 ail.Stream, a2 uint32) {
+func (m *Module) changeVolume(a1 ail.Stream, a2 uint32) {
 	if a1 == 0 {
 		return
 	}
-	v2 := ((*m.ptr_counter_587000_81128).Timers[0].Current >> 16) * ((m.timer.Timers[0].Current >> 16) * ((m.counter_5d4594_816244.Timers[0].Current >> 16) * a2 / 0x4000) / 0x4000) / 0x4000
+	v2 := ((*m.ptr_counter_587000_81128).Timers[0].Current >> 16) *
+		((m.timer.Timers[0].Current >> 16) *
+			((m.counter_5d4594_816244.Timers[0].Current >> 16) * a2 / 0x4000) / 0x4000) / 0x4000
 	m.timer.Timers[0].Flags &= 0xFFFFFFFD
 	m.counter_5d4594_816244.Timers[0].Flags &= 0xFFFFFFFD
 	a1.SetVolume((int)(127*v2) / 100)
 }
 
-func (m *Module) Sub_43D680() {
+func (m *Module) pause() {
 	if s := m.playingStream; s != 0 {
 		s.Pause(true)
 	}
 }
 
-func (m *Module) Sub_43D6A0() {
+func (m *Module) unpause() {
 	if s := m.playingStream; s != 0 {
 		s.Pause(false)
 	}
@@ -178,14 +171,14 @@ func (m *Module) Sub_43D650() {
 	m.currentPlaying.MusicIdx = 0
 }
 
-func (m *Module) startPlay(a1p *MusicState) int {
+func (m *Module) startPlay(a1p *MusicState) bool {
 	if *m.dword_5d4594_816376 == 0 {
-		return 0
+		return false
 	}
 
 	ind := a1p.MusicIdx
 	if ind <= 0 || ind >= uint32(len(audioTable)) {
-		return 0
+		return false
 	}
 	aname := audioTable[ind]
 	m.Sub_43D650()
@@ -197,28 +190,28 @@ func (m *Module) startPlay(a1p *MusicState) int {
 	s := m.dword_5d4594_816376.OpenStream(path)
 	if s == 0 {
 		if m.checkDialogs() {
-			return 0
+			return false
 		}
 		v5 := m.Sub_413890()
 		if v5 == "" {
-			return 0
+			return false
 		}
 		*m.dword_587000_93160 = 1
 		path2 := filepath.Join(v5, path)
 		s = m.dword_5d4594_816376.OpenStream(path2)
 		if s == 0 {
-			return 0
+			return false
 		}
 	}
 	s.SetPosition(int(a1p.Position))
 	m.timer.Timers[0].SetRaw(0)
 	m.timer.Timers[0].SetInterp(0x4000)
-	m.Sub_43D3C0(s, a1p.Volume)
+	m.changeVolume(s, a1p.Volume)
 	s.Start()
 	m.currentPlaying = *a1p
 	a1p.Position = 0
 	m.playingStream = s
-	return 1
+	return true
 }
 
 func (m *Module) Init() {
@@ -262,7 +255,7 @@ func (m *Module) Update() {
 		}
 		if *m.dword_587000_93156 != 0 {
 			m.timer.Timers[0].SetRaw(0x4000)
-			if m.startPlay(&current_block.Inner) != 0 {
+			if m.startPlay(&current_block.Inner) {
 				*m.dword_5d4594_816348 = 1
 				current_block.Loaded = 1
 			} else {
@@ -293,13 +286,13 @@ func (m *Module) Update() {
 			*m.dword_5d4594_816348 = 0
 		} else {
 			m.timer.Timers[0].SetInterp(0x4000)
-			m.Sub_43D6A0()
+			m.unpause()
 			*m.dword_5d4594_816348 = 1
 		}
 	case 4:
 		if m.playingStream != 0 && m.playingStream.Status() != 2 {
 			if m.timer.Timers[0].Current&0xFFFF0000 != 0 {
-				m.Sub_43D680()
+				m.pause()
 				*m.dword_5d4594_816348 = 3
 			}
 		} else {
@@ -309,17 +302,15 @@ func (m *Module) Update() {
 	}
 }
 
-func (m *Module) SetNextMusic(a1 *MusicState) {
+func (m *Module) SetNextMusic(a1 MusicState) {
 	if a1.Volume > 100 {
 		a1.Volume = 100
 	}
 	if m.dword_5d4594_816344 != 0 {
-		m.block_5d4594_816060 = *a1
+		m.block_5d4594_816060 = a1
 	} else {
-		v1 := &m.blocks[m.block_idx^1]
-		v1.Inner = *a1
-		v1.Loaded = 0
-		m.block_idx ^= 1
+		m.block_idx = (m.block_idx + 1) % uint32(len(m.blocks))
+		m.blocks[m.block_idx] = MusicBlock{Inner: a1, Loaded: 0}
 	}
 }
 
@@ -335,23 +326,23 @@ func (m *Module) Sub_43DBE0() {
 	m.Update()
 }
 
-func (m *Module) Sub_43DC40() int {
+func (m *Module) Sub_43DC40() bool {
 	if *m.dword_5d4594_816340 == 0 {
-		return 0
+		return false
 	}
 	if *m.dword_5d4594_816348 != 1 && *m.dword_5d4594_816348 != 4 && *m.dword_5d4594_816348 != 2 {
-		return 0
+		return false
 	}
-	return 1
+	return true
 }
 
 func (m *Module) Sub_43DD70(a1, a2 uint32) {
 	m.block_5d4594_816060 = m.GetCurrentBlock()
-	m.SetNextMusic(&MusicState{MusicIdx: a1, Volume: a2, Position: 0, D: 0})
+	m.SetNextMusic(MusicState{MusicIdx: a1, Volume: a2, Position: 0, D: 0})
 	m.dword_5d4594_816344 = 1
 }
 
 func (m *Module) Sub_43DDA0() {
 	m.dword_5d4594_816344 = 0
-	m.SetNextMusic(&m.block_5d4594_816060)
+	m.SetNextMusic(m.block_5d4594_816060)
 }

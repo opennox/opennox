@@ -29,7 +29,7 @@ func (c *Client) DrawGeneral(a1 bool) error {
 	legacy.Sub_431290()
 	legacy.MusicModule.Sub_43DBD0()
 	legacy.Dialogs.Sub_44D8F0()
-	for legacy.MusicModule.Sub_43DC40() != 0 || legacy.Dialogs.Sub_44D930() {
+	for legacy.MusicModule.Sub_43DC40() || legacy.Dialogs.Sub_44D930() {
 		c.sub4312C0()
 	}
 	v12 := sub_48B3E0(false)

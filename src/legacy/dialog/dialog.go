@@ -23,7 +23,7 @@ func NewDialog(
 	sub_43F130 func() ail.Driver, // get audio device
 	sub_43DBD0 func(), // looks like music? pair with 43DBE0
 	sub_43DBE0 func(), // looks like music? pair with 43DBD0
-	sub_43DC40 func() int, // unknown
+	sub_43DC40 func() bool, // unknown
 
 	set_dword_5d4594_831080 func(uint32),
 	get_dword_587000_93160 func() uint32,
@@ -77,7 +77,7 @@ type Dialog struct {
 	newDriver  func() ail.Driver // get audio device
 	sub_43DBD0 func()            // looks like music? pair with 43DBE0
 	sub_43DBE0 func()            // looks like music? pair with 43DBD0
-	sub_43DC40 func() int        // unknown
+	sub_43DC40 func() bool       // unknown
 
 	set_dword_5d4594_831080 func(uint32)
 	get_dword_587000_93160  func() uint32
@@ -198,7 +198,7 @@ func (d *Dialog) Sub_44D3A0() {
 			*d.someFlag = 0
 		}
 	case 1:
-		if d.sub_43DC40() == 0 {
+		if d.sub_43DC40() == false {
 			*d.state = 2
 		}
 	case 2:

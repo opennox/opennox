@@ -58,17 +58,9 @@ func initMusic() {
 	)
 }
 
-func Get_block_816060() *music.MusicState {
-	return memmap.PtrT[music.MusicState](0x5D4594, 816060)
-}
-
-func PtrUint32_5d4594_816344() *uint32 {
-	return memmap.PtrUint32(0x5d4594, 816344)
-}
-
 //export sub_43D9E0
 func sub_43D9E0(a1p unsafe.Pointer) {
-	Sub_43D9E0((*music.MusicState)(a1p))
+	MusicModule.SetNextMusic(*(*music.MusicState)(a1p))
 }
 
 //export sub_43DD10
@@ -78,9 +70,7 @@ func sub_43DD10(ret unsafe.Pointer) {
 
 // Stop playing music
 func Sub_43D990() {
-	v1 := music.MusicState{}
-	v1.MusicIdx = 0
-	Sub_43D9E0(&v1)
+	MusicModule.SetNextMusic(music.MusicState{})
 }
 
 //export sub_43DBD0
@@ -97,44 +87,13 @@ func checkDialogs() bool {
 	return Dialogs.IsFallbackMode() != 0 && Dialogs.Sub_44D930()
 }
 
-func Sub_43D650() {
-	MusicModule.Sub_43D650()
-}
-
 func Sub_43D9B0(a1, a2 uint32) {
-	blk := music.MusicState{MusicIdx: a1, Volume: a2, Position: 0, D: 0}
-	Sub_43D9E0(&blk)
+	MusicModule.SetNextMusic(music.MusicState{MusicIdx: a1, Volume: a2, Position: 0, D: 0})
 }
 
 //export sub_43D9B0
 func sub_43D9B0(a1, a2 int) {
 	Sub_43D9B0(uint32(a1), uint32(a2))
-}
-
-func Sub_43D8E0() int {
-	MusicModule.Init()
-	return 1
-}
-
-func Sub_43D440() {
-	MusicModule.Update()
-}
-
-// Update current playing music to a1
-func Sub_43D9E0(a1 *music.MusicState) {
-	MusicModule.SetNextMusic(a1)
-}
-
-func Sub_43D2D0() {
-	MusicModule.Sub_43D2D0()
-}
-
-func Sub_43D3C0(a1, a2 int) {
-	MusicModule.Sub_43D3C0(ail.Stream(a1), uint32(a2))
-}
-
-func Sub_43DC40() int {
-	return MusicModule.Sub_43DC40()
 }
 
 //export sub_43DD70

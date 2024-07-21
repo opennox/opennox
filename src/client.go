@@ -181,7 +181,7 @@ func (c *Client) sub4312C0() {
 
 	if ticks-c.ticks805996 > 33 {
 		legacy.Dialogs.Sub_44D3A0()
-		legacy.Sub_43D440()
+		legacy.MusicModule.Update()
 		c.ticks805996 = ticks
 	}
 }

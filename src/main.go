@@ -568,7 +568,7 @@ func sub_43DCC0() {
 	legacy.Sub_43D990()
 	for legacy.Get_dword_5d4594_816348() != 0 {
 		if legacy.Get_dword_5d4594_816348() == 3 {
-			legacy.Sub_43D650()
+			legacy.MusicModule.Sub_43D650()
 			legacy.Set_dword_5d4594_816348(0)
 		}
 		noxClient.sub4312C0()

@@ -30,7 +30,7 @@ func newTestDialog(t *testing.T) *Dialog {
 
 	sub_43DBD0 := func() {}
 	sub_43DBE0 := func() {}
-	sub_43DC40 := func() int { return 0 }
+	sub_43DC40 := func() bool { return false }
 	set_dword_5d4594_831080 := func(v uint32) {
 	}
 	get_dword_587000_93160 := func() uint32 {

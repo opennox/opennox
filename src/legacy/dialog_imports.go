@@ -54,7 +54,7 @@ func initDialog() {
 		},
 		func() { MusicModule.Sub_43DBD0() },
 		func() { MusicModule.Sub_43DBE0() },
-		func() int { return MusicModule.Sub_43DC40() },
+		func() bool { return MusicModule.Sub_43DC40() },
 		Set_dword_5d4594_831080,
 		func() uint32 { return uint32(Get_dword_587000_93160()) },
 	)
