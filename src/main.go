@@ -539,7 +539,7 @@ func sub_4311B0() {
 	legacy.Set_dword_587000_81128(nil)
 	legacy.Sub_431270()
 	if dword_5d4594_1193336 != 0 {
-		legacy.Sub_4875F0()
+		sub_4875F0()
 		legacy.Sub_4870A0()
 		dword_5d4594_1193336 = 0
 	}

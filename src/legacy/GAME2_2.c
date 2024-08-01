@@ -79,7 +79,6 @@ extern uint32_t dword_5d4594_3798804;
 extern uint32_t dword_5d4594_1098576;
 extern uint32_t dword_5d4594_3798820;
 extern uint32_t dword_5d4594_3798824;
-extern void* dword_587000_155144;
 extern uint32_t dword_5d4594_3798840;
 extern void* dword_5d4594_1123524;
 extern uint32_t dword_5d4594_1193380;
@@ -4433,9 +4432,6 @@ void sub_487030(void* lpMem) {
 	free(lpMem);
 }
 
-//----- (00487050) --------------------------------------------------------
-void sub_487050(uint32_t* a1) { nox_common_list_append_4258E0(*(int*)&dword_587000_155144, a1); }
-
 //----- (00487070) --------------------------------------------------------
 void sub_487070(void* lpMem) {
 	sub_487090((uint32_t**)lpMem);
@@ -4460,15 +4456,6 @@ void sub_4870A0() {
 			v1 = v2;
 		} while (v2);
 	}
-}
-
-//----- (004870E0) --------------------------------------------------------
-int* sub_4870E0(int* a1) {
-	int* result; // eax
-
-	result = nox_common_list_getFirstSafe_425890(*(int**)&dword_587000_155144);
-	*a1 = (int)result;
-	return result;
 }
 
 //----- (00487100) --------------------------------------------------------
@@ -4565,20 +4552,6 @@ void sub_4872C0(void* lpMem) {
 		*(uint32_t*)(*((uint32_t*)lpMem + 5) + 16) = 0;
 	}
 	free(lpMem);
-}
-
-//----- (00487310) --------------------------------------------------------
-int sub_487310(uint32_t* a1) {
-	int result; // eax
-
-	++*(uint32_t*)((uint32_t)dword_587000_155144 + 24);
-	nox_common_list_append_4258E0((uint32_t)dword_587000_155144 + 12, a1);
-	result = *(uint32_t*)((uint32_t)dword_587000_155144 + 24) - 1;
-	*(uint32_t*)((uint32_t)dword_587000_155144 + 24) = result;
-	if (result < 0) {
-		*(uint32_t*)((uint32_t)dword_587000_155144 + 24) = 0;
-	}
-	return result;
 }
 
 //----- (00487360) --------------------------------------------------------
@@ -4694,66 +4667,10 @@ int sub_487590(int a1, const void* a2) {
 	return result;
 }
 
-//----- (004875B0) --------------------------------------------------------
-int* sub_4875B0(int* a1) {
-	int* result; // eax
-
-	result = nox_common_list_getFirstSafe_425890((int*)((uint32_t)dword_587000_155144 + 12));
-	*a1 = (int)result;
-	return result;
-}
-
-//----- (004875D0) --------------------------------------------------------
-int* sub_4875D0(int** a1) {
-	if (*a1) {
-		*a1 = nox_common_list_getNextSafe_4258A0(*a1);
-	}
-	return *a1;
-}
-
-//----- (004875F0) --------------------------------------------------------
-int sub_4875F0() {
-	int* v0;    // edi
-	int* v1;    // esi
-	int result; // eax
-	int* v3;    // [esp+4h] [ebp-4h]
-
-	++*(uint32_t*)((uint32_t)dword_587000_155144 + 24);
-	v0 = sub_4875B0((int*)&v3);
-	if (v0) {
-		do {
-			v1 = sub_4875D0(&v3);
-			sub_487680(v0);
-			v0 = v1;
-		} while (v1);
-	}
-	result = *(uint32_t*)((uint32_t)dword_587000_155144 + 24) - 1;
-	*(uint32_t*)((uint32_t)dword_587000_155144 + 24) = result;
-	if (result < 0) {
-		*(uint32_t*)((uint32_t)dword_587000_155144 + 24) = 0;
-	}
-	return result;
-}
-
 //----- (00487680) --------------------------------------------------------
 void sub_487680(void* lpMem) {
 	sub_4876A0((uint32_t**)lpMem);
 	sub_4872C0(lpMem);
-}
-
-//----- (004876A0) --------------------------------------------------------
-void* sub_4876A0(uint32_t** a1) {
-	void* result; // eax
-
-	++*(uint32_t*)((uint32_t)dword_587000_155144 + 24);
-	nox_common_list_remove_425920(a1);
-	result = (void*)(*(uint32_t*)((uint32_t)dword_587000_155144 + 24) - 1);
-	*(uint32_t*)((uint32_t)dword_587000_155144 + 24) = result;
-	if ((int)result < 0) {
-		result = *(void**)&dword_587000_155144;
-		*(uint32_t*)((uint32_t)dword_587000_155144 + 24) = 0;
-	}
-	return result;
 }
 
 //----- (00487750) --------------------------------------------------------

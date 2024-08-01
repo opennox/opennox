@@ -263,29 +263,6 @@ func sub_4311F0() int {
 	return bool2int(v0 != nil && legacy.Sub_487790(v0, 16) == 16)
 }
 
-func sub_486F30() int {
-	nox_common_list_clear_425760(legacy.Get_dword_587000_155144())
-	nox_common_list_clear_425760(unsafe.Add(legacy.Get_dword_587000_155144(), 12))
-	*(*uint32)(unsafe.Add(legacy.Get_dword_587000_155144(), 24)) = 0
-	*memmap.PtrPtr(0x5D4594, 1193340) = unsafe.Add(legacy.Get_dword_587000_155144(), 32)
-	(*timer.TimerGroup)(unsafe.Add(legacy.Get_dword_587000_155144(), 32)).Init()
-	dword_5d4594_1193336 = 1
-	return 0
-}
-
-func sub_486EF0() {
-	if dword_5d4594_1193336 != 0 {
-		if *(*uint32)(unsafe.Add(legacy.Get_dword_587000_155144(), 24)) == 0 {
-			v1 := *(*unsafe.Pointer)(unsafe.Add(legacy.Get_dword_587000_155144(), 12))
-			for it := unsafe.Add(legacy.Get_dword_587000_155144(), 12); v1 != it; v1 = *(*unsafe.Pointer)(v1) {
-				if (*(*int32)(unsafe.Add(v1, 4*3)) & 2) == 0 {
-					ccall.CallVoidPtr(*(*unsafe.Pointer)(unsafe.Add(v1, 4*54)), v1)
-				}
-			}
-		}
-	}
-}
-
 var _ = [1]struct{}{}[288-unsafe.Sizeof(audioStructXxx{})]
 
 type audioStructXxx struct {

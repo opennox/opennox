@@ -1,6 +1,8 @@
 package opennox
 
 import (
+	"unsafe"
+
 	"github.com/noxworld-dev/opennox-lib/types"
 
 	"github.com/noxworld-dev/opennox/v1/client"
@@ -151,6 +153,10 @@ func init() {
 	legacy.Sub_43F060 = sub_43F060
 	legacy.Sub_43EC30 = sub_43EC30
 	legacy.Sub_43ECB0 = sub_43ECB0
+	legacy.Sub_487050 = func(a1 unsafe.Pointer) { sub_487050((*Struct88)(a1)) }
+	legacy.Sub_4870E0 = func(a1 unsafe.Pointer) unsafe.Pointer { return unsafe.Pointer(sub_4870E0((**Struct88)(a1))) }
+	legacy.Sub_487310 = func(a1 unsafe.Pointer) int32 { return sub_487310((*Struct264)(a1)) }
+	legacy.Sub_4876A0 = func(a1 unsafe.Pointer) { sub_4876A0((*Struct264)(a1)) }
 	legacy.Nox_xxx_updateSprings_5113A0 = nox_xxx_updateSprings_5113A0
 	legacy.Nox_xxx_unitIsUnitTT_4E7C80 = nox_xxx_unitIsUnitTT_4E7C80
 	legacy.Nox_xxx_updatePlayer_4F8100 = nox_xxx_updatePlayer_4F8100
