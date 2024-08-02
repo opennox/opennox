@@ -59,7 +59,7 @@ func (l *listItem) Next() *listItem {
 		return nil
 	}
 	it := l.next
-	if it == l.head {
+	if it == it.head {
 		return nil
 	}
 	return it
