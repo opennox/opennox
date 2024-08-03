@@ -1,7 +1,6 @@
 package opennox
 
 import (
-	"fmt"
 	"unsafe"
 
 	"github.com/noxworld-dev/opennox-lib/types"
@@ -161,7 +160,6 @@ func init() {
 	}
 	legacy.Sub_487310 = func(a1 unsafe.Pointer) int32 { return audioFx.Sub_487310((*audiofx.Struct264)(a1)) }
 	legacy.Sub_4876A0 = func(a1 unsafe.Pointer) {
-		fmt.Printf("Sub_4876A0: %v %x\n", audioFx, a1)
 		audioFx.Sub_4876A0((*audiofx.Struct264)(a1))
 	}
 	legacy.Nox_xxx_updateSprings_5113A0 = nox_xxx_updateSprings_5113A0
