@@ -30,12 +30,16 @@ All release builds are made from the `dev` branch. Recent OpenNox releases can b
 
 Linux releases are also available in `stable` channel of our [Snap package](https://snapcraft.io/opennox).
 
+Packages for Arch Linux are available on the AUR: <a href="https://aur.archlinux.org/packages/opennox"><img alt="AUR opennox package" src="https://img.shields.io/aur/version/opennox?style=flat&label=opennox&logo=archlinux"></a> <a href="https://aur.archlinux.org/packages/opennox-bin"><img alt="AUR opennox-bin package" src="https://img.shields.io/aur/version/opennox-bin?style=flat&label=opennox-bin&logo=archlinux"></a>
+
 ### Nightly
 On each commit, an automated build of the `dev` branch is uploaded.
 These builds contain all the latest merged features, but are not yet considered stable for release.
 These builds are to help provide an insight to what the next release will contain and should only be used for active playtesting purposes **only**.
 
 Linux nightly builds are also available in `edge` channel of our [Snap package](https://snapcraft.io/opennox).
+
+A package for Arch Linux is available on the AUR: <a href="https://aur.archlinux.org/packages/opennox-git"><img alt="AUR opennox-git package" src="https://img.shields.io/aur/version/opennox-git?style=flat&label=opennox-git&logo=archlinux"></a>
 
 ## Build OpenNox
 **NOTE: This section is only for people who wish to build the source code locally.**
