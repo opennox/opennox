@@ -5,6 +5,7 @@ go 1.21
 toolchain go1.21.5
 
 require (
+	github.com/adrg/xdg v0.5.0
 	github.com/fxamacker/cbor/v2 v2.6.0
 	github.com/noxworld-dev/lobby v0.0.0-20220306183851-3877f0a7002d
 	github.com/noxworld-dev/nat v0.1.0
@@ -16,19 +17,20 @@ require (
 	github.com/noxworld-dev/vqa-decode v0.0.0-20220408200150-8bbbe7a064f7
 	github.com/noxworld-dev/xwis v0.0.0-20220204182326-c5d2fc18e75e
 	github.com/prometheus/client_golang v1.12.1
+	github.com/shoenig/test v1.7.0
 	github.com/spf13/cobra v1.8.0
-	github.com/spf13/viper v1.18.2
-	github.com/stretchr/testify v1.8.4
+	github.com/spf13/viper v1.19.0
+	github.com/stretchr/testify v1.9.0
 	github.com/szhublox/opennoxcontrol v0.0.0-20211214215120-c4bc4281312f
 	github.com/tawesoft/golib/v2 v2.6.1
 	github.com/timshannon/go-openal v0.0.0-20170220204755-e0ed4c67cffe
 	github.com/youpy/go-wav v0.3.2
-	golang.org/x/crypto v0.19.0
+	golang.org/x/crypto v0.21.0
 	golang.org/x/exp v0.0.0-20240213143201-ec583247a57a
 	golang.org/x/image v0.15.0
 	golang.org/x/mod v0.15.0
 	golang.org/x/sync v0.6.0
-	golang.org/x/sys v0.17.0
+	golang.org/x/sys v0.22.0
 	golang.org/x/tools v0.18.0
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -53,14 +55,13 @@ require (
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/noxworld-dev/noxscript/eud/v171 v171.3.1 // indirect
-	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
-	github.com/shoenig/test v1.7.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
@@ -74,7 +75,7 @@ require (
 	github.com/zaf/g711 v0.0.0-20190814101024-76a4a538f52b // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/protobuf v1.31.0 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/irc.v3 v3.1.4 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

@@ -1,41 +1,39 @@
 package opennox
 
 import (
+	"github.com/adrg/xdg"
+	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
-	"runtime"
-
-	"github.com/spf13/viper"
 
 	"github.com/noxworld-dev/opennox-lib/env"
 	"github.com/noxworld-dev/opennox-lib/log"
 )
 
 func init() {
-	wd, err := os.Getwd()
-	if err != nil {
+	viper.SetConfigName(configName)
+	viper.SetConfigType(configExt)
+
+	// Snap
+	if snapCommonDir := env.AppUserDir(); snapCommonDir != "" {
+		viper.AddConfigPath(snapCommonDir)
+	}
+
+	// Current working directory unless it's in a location only for binaries
+	wd, err1 := os.Getwd()
+	if err1 != nil {
 		wd = "."
 	}
-	viper.SetConfigName(configName)
-	viper.AddConfigPath(wd)
-	if sdir := env.AppUserDir(); sdir != "" {
-		viper.AddConfigPath(sdir)
-		configPath = filepath.Join(sdir, configName+"."+configExt)
-	} else {
-		configPath = filepath.Join(wd, configName+"."+configExt)
+	if absd, _ := filepath.Abs(filepath.Dir(wd)); absd != "/usr/bin" && absd != "/bin" {
+		viper.AddConfigPath(wd)
 	}
-	viper.AddConfigPath(filepath.Dir(os.Args[0]))
-	if runtime.GOOS != "windows" {
-		if dir := os.Getenv("XDG_CONFIG_HOME"); dir != "" {
-			viper.AddConfigPath(filepath.Join(dir, "opennox"))
-		}
-		if home, err := os.UserHomeDir(); err == nil {
-			// Linux Snapcraft installation replaces HOME variable
-			if rhome := os.Getenv("SNAP_REAL_HOME"); rhome != "" {
-				home = rhome
-			}
-			viper.AddConfigPath(filepath.Join(home, ".config/opennox"))
-		}
+
+	// User Config
+	viper.AddConfigPath(filepath.Join(xdg.ConfigHome, "opennox"))
+
+	// System Config
+	for _, dir := range xdg.ConfigDirs {
+		viper.AddConfigPath(filepath.Join(dir, "opennox"))
 	}
 }
 
@@ -63,7 +61,7 @@ func writeConfig() error {
 		return nil
 	}
 	configLog.Printf("writing to %q", configPath)
-	if err := viper.WriteConfigAs(configPath); err != nil {
+	if err := viper.WriteConfig(); err != nil {
 		configLog.Printf("cannot save file: %v", err)
 		return err
 	}
@@ -123,8 +121,8 @@ func readConfig(path string) error {
 		if abs, err := filepath.Abs(path); err == nil {
 			path = abs
 		}
-		viper.SetConfigFile(path)
 		configPath = path
+		viper.SetConfigFile(configPath)
 	}
 	err := viper.ReadInConfig()
 	if err == nil {
@@ -133,15 +131,15 @@ func readConfig(path string) error {
 		configLog.Printf("using file: %q", configPath)
 		return nil
 	}
-	if _, ok := err.(viper.ConfigFileNotFoundError); ok || os.IsNotExist(err) {
-		writeConfigLater()
-		configLog.Println("file not found, using defaults")
-		return nil
-	}
-	// There's a weird behavior in viper that it may try to read config file without extension.
-	// It's a problem for us because we have "opennox" binary on Linux, so viper will read the binary itself and fail.
-	// So we check this case and ignore it as if the config was not found.
-	if filepath.Base(viper.ConfigFileUsed()) == configName {
+	_, ok := err.(viper.ConfigFileNotFoundError)
+	if ok || os.IsNotExist(err) || filepath.Base(viper.ConfigFileUsed()) == configName {
+		if snapCommonDir := env.AppUserDir(); snapCommonDir != "" {
+			configPath = filepath.Join(snapCommonDir, configName+"."+configExt)
+			viper.SetConfigFile(configPath)
+		} else {
+			configPath = filepath.Join(xdg.ConfigHome, "opennox", configName+"."+configExt)
+			viper.SetConfigFile(configPath)
+		}
 		writeConfigLater()
 		configLog.Println("file not found, using defaults")
 		return nil
