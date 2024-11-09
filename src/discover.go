@@ -7,12 +7,13 @@ import (
 
 	"github.com/noxworld-dev/lobby"
 
+	"github.com/noxworld-dev/opennox/v1/common/config"
 	"github.com/noxworld-dev/opennox/v1/common/discover"
 	noxflags "github.com/noxworld-dev/opennox/v1/common/flags"
 )
 
 func init() {
-	configStrPtr("network.lobby.address", "NOX_LOBBY_ADDR", discover.LobbyServer, &discover.LobbyServer)
+	configStrPtr(config.KeyNetLobbyAddr, "NOX_LOBBY_ADDR", discover.LobbyServer, &discover.LobbyServer)
 }
 
 type LobbyServerFunc func(s *LobbyServerInfo)

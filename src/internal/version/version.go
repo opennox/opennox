@@ -1,13 +1,15 @@
 package version
 
 import (
+	"log/slog"
+
 	"github.com/noxworld-dev/opennox-lib/log"
 )
 
 var Log = log.New("version")
 
 func LogVersion() {
-	Log.Printf("version: %s (%s)", Version(), Commit())
+	slog.Info("version", "vers", Version(), "commit", Commit())
 }
 
 const (

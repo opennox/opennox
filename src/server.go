@@ -24,6 +24,7 @@ import (
 
 	"github.com/noxworld-dev/opennox-lib/console"
 
+	"github.com/noxworld-dev/opennox/v1/common/config"
 	noxflags "github.com/noxworld-dev/opennox/v1/common/flags"
 	"github.com/noxworld-dev/opennox/v1/common/memmap"
 	"github.com/noxworld-dev/opennox/v1/common/sound"
@@ -75,9 +76,9 @@ func NewServer(pr console.Printer, sm *strman.StringManager) *Server {
 	}
 	s.NetXferLocal = netXferLocal
 	s.ObjectByNetCode = s.getObjectFromNetCode
-	configBoolPtr("network.xor", "NOX_NET_XOR", true, &s.NetStr.Xor)
-	configBoolPtr("network.port_forward", "NOX_NET_NAT", true, &s.Server.UseNAT)
-	configHiddenBoolPtr("network.debug", "NOX_DEBUG_NET", &s.NetStr.Debug)
+	configBoolPtr(config.KeyNetXor, "NOX_NET_XOR", true, &s.NetStr.Xor)
+	configBoolPtr(config.KeyNetPortForward, "NOX_NET_NAT", true, &s.Server.UseNAT)
+	configHiddenBoolPtr(config.KeyNetDebug, "NOX_DEBUG_NET", &s.NetStr.Debug)
 	s.initMetrics()
 	s.abilities.Init(s)
 	s.ai.Init(s)

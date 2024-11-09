@@ -4,12 +4,14 @@ import (
 	"context"
 
 	octl "github.com/szhublox/opennoxcontrol"
+
+	"github.com/noxworld-dev/opennox/v1/common/config"
 )
 
 func init() {
 	var opts octl.Options
-	configBoolPtr("server.control.allow_cmds", "NOX_SERVER_HTTP_ALLOWS_CMDS", false, &opts.AllowCommands)
-	configBoolPtr("server.control.allow_map_change", "NOX_SERVER_HTTP_ALLOWS_MAP_CHANGE", false, &opts.AllowMapChange)
+	configBoolPtr(config.KeyServerAPICmds, "NOX_SERVER_HTTP_ALLOWS_CMDS", false, &opts.AllowCommands)
+	configBoolPtr(config.KeyServerAPIMapChange, "NOX_SERVER_HTTP_ALLOWS_MAP_CHANGE", false, &opts.AllowMapChange)
 	registerOnDataPathSet(func() {
 		game := &gameControlHTTP{
 			// enforce these flags from our side as well

@@ -6,7 +6,6 @@ import (
 	"image"
 	"unicode/utf16"
 
-	"github.com/spf13/viper"
 	"github.com/tawesoft/golib/v2/dialog"
 
 	"github.com/noxworld-dev/opennox-lib/client/seat/sdl"
@@ -14,13 +13,14 @@ import (
 
 	"github.com/noxworld-dev/opennox/v1/client/input"
 	"github.com/noxworld-dev/opennox/v1/client/render"
+	"github.com/noxworld-dev/opennox/v1/common/config"
 	"github.com/noxworld-dev/opennox/v1/internal/version"
 	"github.com/noxworld-dev/opennox/v1/legacy"
 )
 
 func init() {
-	viper.SetDefault(configVideoFiltering, true)
-	viper.SetDefault(configVideoStretch, false)
+	config.Global.SetDefault(configVideoFiltering, true)
+	config.Global.SetDefault(configVideoStretch, false)
 }
 
 func (c *Client) initSeat(sz image.Point) error {
@@ -57,8 +57,8 @@ func (c *Client) initSeat(sz image.Point) error {
 	c.Win.OnViewResize(inp.SetWinSize)
 	OnPixBufferResize(inp.SetDrawWinSize)
 
-	c.Win.SetFiltering(viper.GetBool(configVideoFiltering))
-	c.Win.SetStretched(viper.GetBool(configVideoStretch))
+	c.Win.SetFiltering(config.Global.GetBool(configVideoFiltering))
+	c.Win.SetStretched(config.Global.GetBool(configVideoStretch))
 	if err != nil {
 		return err
 	}

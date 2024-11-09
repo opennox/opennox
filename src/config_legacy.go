@@ -13,6 +13,7 @@ import (
 	"github.com/noxworld-dev/opennox-lib/env"
 	"github.com/noxworld-dev/opennox-lib/ifs"
 
+	"github.com/noxworld-dev/opennox/v1/common/config"
 	noxflags "github.com/noxworld-dev/opennox/v1/common/flags"
 	"github.com/noxworld-dev/opennox/v1/common/memmap"
 	"github.com/noxworld-dev/opennox/v1/legacy"
@@ -28,15 +29,15 @@ var (
 	legacyProfiled      = 0
 )
 
-func nox_common_writecfgfile(str string) {
-	if err := writeConfigLegacy(str); err != nil {
-		configLog.Printf("%s", err)
+func nox_common_writecfgfile(path string) {
+	if err := writeConfigLegacy(path); err != nil {
+		config.Global.Log.Error("cannot write legacy config", "path", path, "err", err)
 	}
 }
 
 func noxConfigRead(path string, skip bool) error {
 	c := noxClient
-	configLog.Printf("reading legacy: %q", path)
+	config.Global.Log.Info("reading legacy config", "path", path)
 	c.ctrl.Reset()
 	f, err := ifs.Open(path)
 	if err != nil {
@@ -660,7 +661,7 @@ func writeConfigLegacy(path string) error {
 	if env.IsE2E() {
 		return nil
 	}
-	configLog.Printf("writing legacy: %q", path)
+	config.Global.Log.Info("writing legacy config", "path", path)
 	cfile := &cfg.File{Sections: make([]cfg.Section, 2)}
 	writeConfigLegacyMain(&cfile.Sections[0])
 	writeConfigHotkeys(&cfile.Sections[1])

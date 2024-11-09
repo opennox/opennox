@@ -18,7 +18,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/spf13/viper"
 
 	"github.com/noxworld-dev/opennox-lib/client/keybind"
 	"github.com/noxworld-dev/opennox-lib/common"
@@ -28,6 +27,7 @@ import (
 
 	"github.com/noxworld-dev/opennox/v1/client"
 	"github.com/noxworld-dev/opennox/v1/client/gui"
+	"github.com/noxworld-dev/opennox/v1/common/config"
 	noxflags "github.com/noxworld-dev/opennox/v1/common/flags"
 	"github.com/noxworld-dev/opennox/v1/common/memmap"
 	"github.com/noxworld-dev/opennox/v1/common/serial"
@@ -40,7 +40,7 @@ import (
 
 func init() {
 	http.Handle("/metrics", promhttp.Handler())
-	viper.SetDefault(configManualSpellCastDelay, 0.5)
+	config.Global.SetDefault(configManualSpellCastDelay, 0.5)
 	promauto.NewCounterVec(prometheus.CounterOpts{
 		Name: "opennox_version",
 		Help: "OpenNox version",
@@ -178,10 +178,9 @@ func RunArgs(args []string) (gerr error) {
 		return fmt.Errorf("cannot read config: %w", err)
 	}
 	defer maybeWriteConfig()
-	if cur := viper.GetString(configNoxSerial); cur == "" {
+	if cur := config.Global.GetString(config.KeyNoxSerial); cur == "" {
 		cur = serial.Generate()
-		viper.Set(configNoxSerial, cur)
-		writeConfigLater()
+		config.Global.Set(config.KeyNoxSerial, cur)
 	}
 	if env.IsE2E() {
 		*fNoLimit = true
@@ -191,12 +190,11 @@ func RunArgs(args []string) (gerr error) {
 		datapath.SetData(path)
 	} else if path = os.Getenv("NOX_DATA"); path != "" {
 		datapath.SetData(path)
-	} else if path = viper.GetString(configNoxDataPath); path != "" {
+	} else if path = config.Global.GetString(config.KeyNoxDataPath); path != "" {
 		datapath.SetData(path)
-		if filepath.IsAbs(path) && strings.HasPrefix(path, filepath.Dir(viper.ConfigFileUsed())) {
-			if rel, err := filepath.Rel(filepath.Dir(viper.ConfigFileUsed()), path); err == nil {
-				viper.Set(configNoxDataPath, rel)
-				writeConfigLater()
+		if filepath.IsAbs(path) && strings.HasPrefix(path, filepath.Dir(config.Global.Path())) {
+			if rel, err := filepath.Rel(filepath.Dir(config.Global.Path()), path); err == nil {
+				config.Global.Set(config.KeyNoxDataPath, rel)
 			}
 		}
 	} else {
@@ -212,20 +210,19 @@ func RunArgs(args []string) (gerr error) {
 			return err
 		}
 		datapath.SetData(path)
-		if filepath.IsAbs(path) && strings.HasPrefix(path, filepath.Dir(viper.ConfigFileUsed())) {
-			if rel, err := filepath.Rel(filepath.Dir(viper.ConfigFileUsed()), path); err == nil {
+		if filepath.IsAbs(path) && strings.HasPrefix(path, filepath.Dir(config.Global.Path())) {
+			if rel, err := filepath.Rel(filepath.Dir(config.Global.Path()), path); err == nil {
 				path = rel
 			}
 		}
-		viper.Set(configNoxDataPath, path)
-		writeConfigLater()
+		config.Global.Set(config.KeyNoxDataPath, path)
 	}
 	maybeWriteConfig()
 	if env.IsE2E() {
-		viper.Reset() // defaults only
+		config.Global.Reset() // defaults only
 		serial.SetSerial(serial.Generate())
 	} else {
-		cur := viper.GetString(configNoxSerial)
+		cur := config.Global.GetString(config.KeyNoxSerial)
 		if cur == "" {
 			cur = serial.Generate()
 		}
@@ -364,7 +361,7 @@ func RunArgs(args []string) (gerr error) {
 	legacy.Nox_xxx_servSetPlrLimit_409F80(32)
 
 	// manual spell cast timeout (in seconds)
-	msmul := viper.GetFloat64(configManualSpellCastDelay)
+	msmul := config.Global.GetFloat(configManualSpellCastDelay)
 	// manual spell cast timeout (in frames)
 	spellTimeout = noxServer.SecToFramesF(msmul)
 
@@ -380,8 +377,8 @@ func RunArgs(args []string) (gerr error) {
 		noxClient.videoSetGameMode(image.Point{X: 1024, Y: 768})
 	} else {
 		noxClient.videoSetGameMode(image.Point{
-			X: viper.GetInt(configVideoWidth),
-			Y: viper.GetInt(configVideoHeight),
+			X: config.Global.GetInt(configVideoWidth),
+			Y: config.Global.GetInt(configVideoHeight),
 		})
 	}
 	if err := gameexReadConfig("game_ex.cfg"); err != nil {

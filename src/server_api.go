@@ -11,6 +11,7 @@ import (
 
 	"github.com/noxworld-dev/opennox-lib/log"
 
+	"github.com/noxworld-dev/opennox/v1/common/config"
 	noxflags "github.com/noxworld-dev/opennox/v1/common/flags"
 	"github.com/noxworld-dev/opennox/v1/internal/version"
 )
@@ -26,7 +27,7 @@ func init() {
 	}
 	const pref = "/api/v0/game"
 	var token string
-	configStrPtr("server.api_token", "NOX_API_TOKEN", "", &token)
+	configStrPtr(config.KeyServerAPIToken, "NOX_API_TOKEN", "", &token)
 	registerOnConfigRead(func() {
 		s := noxServer
 		mux := s.HTTP()

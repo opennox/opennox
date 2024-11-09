@@ -11,7 +11,12 @@ logs
 *.o
 *.exe
 *.wasm
-src/**/*.png
+src/common/*.png
+src/internal/*.png
+src/legacy/*.png
+src/client/*.png
+src/server/*.png
+src/*.png
 src/*.dat
 src/*.dat.gz
 cmake-*

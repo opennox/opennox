@@ -8,7 +8,8 @@ import (
 	"github.com/noxworld-dev/opennox-lib/client/seat"
 	"github.com/noxworld-dev/opennox-lib/console"
 	"github.com/noxworld-dev/opennox-lib/log"
-	"github.com/spf13/viper"
+
+	"github.com/noxworld-dev/opennox/v1/common/config"
 )
 
 const (
@@ -182,8 +183,7 @@ func setGammaSlider(v int) {
 
 func setGammaSliderOpts(v int) {
 	setGammaSlider(v)
-	viper.Set(configVideoGamma, getGamma())
-	writeConfigLater()
+	config.Global.Set(configVideoGamma, getGamma())
 }
 
 func updateGamma(value int) {

@@ -25,6 +25,7 @@ import (
 
 	"github.com/noxworld-dev/opennox/v1/client"
 	"github.com/noxworld-dev/opennox/v1/client/gui"
+	"github.com/noxworld-dev/opennox/v1/common/config"
 	"github.com/noxworld-dev/opennox/v1/common/discover"
 	noxflags "github.com/noxworld-dev/opennox/v1/common/flags"
 	"github.com/noxworld-dev/opennox/v1/common/memmap"
@@ -52,8 +53,8 @@ var (
 )
 
 func init() {
-	configBoolPtr("network.xwis.register", "NOX_XWIS", true, &useXWIS)
-	configStrPtr("server.maps.default_chat", "NOX_CHAT_MAP", "so_lod", &defaultChatMap)
+	configBoolPtr(config.KeyNetRegister, "NOX_XWIS", true, &useXWIS)
+	configStrPtr(config.KeyDefChatMap, "NOX_CHAT_MAP", "so_lod", &defaultChatMap)
 	gui.RegisterState(client.StateMovies, "Movies", nox_game_rollLogoAndStart_4AB1F0)
 	gui.RegisterState(client.StateMainMenu, "MainMenu", nox_game_showMainMenu4A1C00)
 	gui.RegisterState(client.StateCharSelect, "CharSelect", func() bool {

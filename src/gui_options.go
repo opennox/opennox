@@ -7,12 +7,11 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/spf13/viper"
-
 	"github.com/noxworld-dev/opennox-lib/noxfont"
 	"github.com/noxworld-dev/opennox-lib/strman"
 
 	"github.com/noxworld-dev/opennox/v1/client/gui"
+	"github.com/noxworld-dev/opennox/v1/common/config"
 	"github.com/noxworld-dev/opennox/v1/common/sound"
 	"github.com/noxworld-dev/opennox/v1/legacy"
 )
@@ -26,11 +25,11 @@ const (
 )
 
 func init() {
-	viper.SetDefault(configVideoWidth, 1024)
-	viper.SetDefault(configVideoHeight, 768)
-	viper.SetDefault(configVideoGamma, gammaDef)
+	config.Global.SetDefault(configVideoWidth, 1024)
+	config.Global.SetDefault(configVideoHeight, 768)
+	config.Global.SetDefault(configVideoGamma, gammaDef)
 	registerOnConfigRead(func() {
-		setGamma(float32(viper.GetFloat64(configVideoGamma)))
+		setGamma(float32(config.Global.GetFloat(configVideoGamma)))
 	})
 }
 
@@ -90,9 +89,8 @@ func nox_gui_menu_proc_ext(id int) int {
 	opts := getResolutionOptions()
 	if id >= guiIDMenuExt && id < guiIDMenuExt+len(opts) {
 		guiOptionsRes = opts[id-guiIDMenuExt]
-		viper.Set(configVideoWidth, guiOptionsRes.X)
-		viper.Set(configVideoHeight, guiOptionsRes.Y)
-		writeConfigLater()
+		config.Global.Set(configVideoWidth, guiOptionsRes.X)
+		config.Global.Set(configVideoHeight, guiOptionsRes.Y)
 	}
 	clientPlaySoundSpecial(sound.SoundShellClick, 100)
 	return 1

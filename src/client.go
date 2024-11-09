@@ -5,9 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/noxworld-dev/opennox-lib/console"
-	"github.com/spf13/viper"
 
 	"github.com/noxworld-dev/opennox/v1/client"
+	"github.com/noxworld-dev/opennox/v1/common/config"
 	noxflags "github.com/noxworld-dev/opennox/v1/common/flags"
 	"github.com/noxworld-dev/opennox/v1/common/memmap"
 	"github.com/noxworld-dev/opennox/v1/legacy"
@@ -98,11 +98,11 @@ func (c *Client) SetStretch(v bool) {
 		return
 	}
 	c.Client.SetStretch(v)
-	viper.Set(configVideoStretch, v)
+	config.Global.Set(configVideoStretch, v)
 }
 
 func (c *Client) setStretchIfNotSet(v bool) {
-	if !viper.IsSet(configVideoStretch) {
+	if !config.Global.IsSet(configVideoStretch) {
 		c.SetStretch(v)
 	}
 }
@@ -116,8 +116,7 @@ func (c *Client) ToggleFiltering() {
 		return
 	}
 	val := c.Client.ToggleFiltering()
-	viper.Set(configVideoFiltering, val)
-	writeConfigLater()
+	config.Global.Set(configVideoFiltering, val)
 }
 
 func (c *Client) processInput() {

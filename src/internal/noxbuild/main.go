@@ -19,6 +19,7 @@ const (
 	BinOpenNoxDebug   = "opennox-debug"
 	BinOpenNoxHDDebug = "opennox-hd-debug"
 	BinServer         = "opennox-server"
+	BinLauncher       = "opennox-launcher"
 )
 
 const (
@@ -27,7 +28,7 @@ const (
 
 var (
 	defTargets = []string{
-		BinOpenNox, BinOpenNoxHD, BinServer,
+		BinOpenNox, BinOpenNoxHD, BinLauncher, BinServer,
 	}
 	fOut     = flag.String("o", "", "output directory")
 	fSrc     = flag.String("s", "", "source directory")
@@ -90,13 +91,18 @@ func buildTarget(target string) error {
 		return goBuild("opennox", BinOpenNoxHDDebug, &buildOpts{
 			CGO: true, Tags: []string{"highres"},
 		})
+	case BinLauncher, "launcher":
+		return goBuild(BinLauncher, BinLauncher, &buildOpts{
+			Native: true, CGO: true, GUI: true,
+		})
 	}
 }
 
 type buildOpts struct {
-	CGO  bool
-	GUI  bool
-	Tags []string
+	Native bool
+	CGO    bool
+	GUI    bool
+	Tags   []string
 }
 
 func goBuild(cmd string, bin string, opts *buildOpts) error {
@@ -162,10 +168,14 @@ func goBuild(cmd string, bin string, opts *buildOpts) error {
 	)
 	if opts.CGO {
 		envs = append(envs,
-			"GOARCH=386",
 			"CGO_ENABLED=1",
-			`CGO_CFLAGS_ALLOW=(-fshort-wchar)|(-fno-strict-aliasing)|(-fno-strict-overflow)`,
 		)
+		if !opts.Native {
+			envs = append(envs,
+				"GOARCH=386",
+				`CGO_CFLAGS_ALLOW=(-fshort-wchar)|(-fno-strict-aliasing)|(-fno-strict-overflow)`,
+			)
+		}
 		if isCross {
 			switch goos {
 			case "windows":

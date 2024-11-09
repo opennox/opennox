@@ -9,6 +9,14 @@ import (
 )
 
 func init() {
+	noxConsole.Register(&console.Command{
+		Token:  "crash",
+		HelpID: "crashhelp",
+		Flags:  console.ClientServer,
+		Func: func(ctx context.Context, c *console.Console, tokens []string) bool {
+			panic("intended crash")
+		},
+	})
 	noxCmdShow.Register(&console.Command{
 		Token:  "perfmon",
 		HelpID: "showperfmonhelp",

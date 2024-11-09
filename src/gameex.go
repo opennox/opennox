@@ -11,15 +11,14 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/noxworld-dev/opennox-lib/player"
-	"github.com/spf13/viper"
-
 	"github.com/noxworld-dev/opennox-lib/client/keybind"
 	"github.com/noxworld-dev/opennox-lib/datapath"
 	"github.com/noxworld-dev/opennox-lib/ifs"
 	"github.com/noxworld-dev/opennox-lib/log"
+	"github.com/noxworld-dev/opennox-lib/player"
 
 	"github.com/noxworld-dev/opennox/v1/client/gui"
+	"github.com/noxworld-dev/opennox/v1/common/config"
 	noxflags "github.com/noxworld-dev/opennox/v1/common/flags"
 	"github.com/noxworld-dev/opennox/v1/common/sound"
 	"github.com/noxworld-dev/opennox/v1/internal/netstr"
@@ -36,10 +35,10 @@ var gameex = struct {
 }
 
 func gameexDefaults() {
-	viper.SetDefault(configKeyGameExAutoShield, true)
-	viper.SetDefault(configKeyGameExGreatSwordBlock, false)
-	viper.SetDefault(configKeyGameExWarWeaponScroll, true)
-	viper.SetDefault(configKeyGameExBerserkShieldBlock, false)
+	config.Global.SetDefault(configKeyGameExAutoShield, true)
+	config.Global.SetDefault(configKeyGameExGreatSwordBlock, false)
+	config.Global.SetDefault(configKeyGameExWarWeaponScroll, true)
+	config.Global.SetDefault(configKeyGameExBerserkShieldBlock, false)
 }
 
 const (
@@ -59,7 +58,7 @@ func gameexLoadConfig() {
 		{Key: configKeyGameExWarWeaponScroll, Flag: 0x8},
 		{Key: configKeyGameExBerserkShieldBlock, Flag: 0x10},
 	} {
-		if viper.GetBool(f.Key) {
+		if config.Global.GetBool(f.Key) {
 			*legacy.Get_gameex_flags_ptr() |= uint32(f.Flag)
 		} else {
 			*legacy.Get_gameex_flags_ptr() &^= uint32(f.Flag)
@@ -100,40 +99,36 @@ func gameexReadConfig(path string) error {
 		val := strings.TrimSpace(sub[1])
 		switch key {
 		case "AUTO_SHIELD":
-			if !viper.IsSet(configKeyGameExAutoShield) {
+			if !config.Global.IsSet(configKeyGameExAutoShield) {
 				v, err := strconv.ParseBool(val)
 				if err != nil {
 					return err
 				}
-				viper.Set(configKeyGameExAutoShield, v)
-				writeConfigLater()
+				config.Global.Set(configKeyGameExAutoShield, v)
 			}
 		case "GREAT_SWORD_BLOKING_WALK", "GREAT_SWORD_BLOCKING_WALK":
-			if !viper.IsSet(configKeyGameExGreatSwordBlock) {
+			if !config.Global.IsSet(configKeyGameExGreatSwordBlock) {
 				v, err := strconv.ParseBool(val)
 				if err != nil {
 					return err
 				}
-				viper.Set(configKeyGameExGreatSwordBlock, v)
-				writeConfigLater()
+				config.Global.Set(configKeyGameExGreatSwordBlock, v)
 			}
 		case "MOUSE_KEYBOARD_ROLL":
-			if !viper.IsSet(configKeyGameExWarWeaponScroll) {
+			if !config.Global.IsSet(configKeyGameExWarWeaponScroll) {
 				v, err := strconv.ParseBool(val)
 				if err != nil {
 					return err
 				}
-				viper.Set(configKeyGameExWarWeaponScroll, v)
-				writeConfigLater()
+				config.Global.Set(configKeyGameExWarWeaponScroll, v)
 			}
 		case "BERSERKER_SHIED_BLOCK", "BERSERKER_SHIELD_BLOCK":
-			if !viper.IsSet(configKeyGameExBerserkShieldBlock) {
+			if !config.Global.IsSet(configKeyGameExBerserkShieldBlock) {
 				v, err := strconv.ParseBool(val)
 				if err != nil {
 					return err
 				}
-				viper.Set(configKeyGameExBerserkShieldBlock, v)
-				writeConfigLater()
+				config.Global.Set(configKeyGameExBerserkShieldBlock, v)
 			}
 		case "EXTENSION_MESSAGES":
 			v, err := strconv.ParseBool(val)
