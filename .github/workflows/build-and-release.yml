@@ -48,8 +48,6 @@ jobs:
           path: |
             build/opennox.exe
             build/opennox-hd.exe
-            build/opennox-debug.exe
-            build/opennox-debug-hd.exe
             build/opennox-server.exe
             build/*.dll
           if-no-files-found: error
@@ -93,7 +91,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  linux_docker:
+  linux_docker_386:
     # Compile Linux binaries with a golang docker container
     name: Compile for Linux
     runs-on: ubuntu-latest
@@ -123,6 +121,37 @@ jobs:
             build/opennox
             build/opennox-hd
             build/opennox-server
+          if-no-files-found: error
+          retention-days: 1
+
+  linux_docker_x64:
+    # Compile Linux binaries with a golang docker container
+    name: Compile for Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Get go cache
+        uses: actions/cache@v3
+        with:
+          path: gocache
+          key: linux64-gocache-v3-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            linux64-gocache-v3-
+
+      - uses: docker://ghcr.io/noxworld-dev/docker-build:latest-linux
+        name: Docker build
+
+      - uses: actions/upload-artifact@v3
+        name: Upload artifacts
+        if: startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/dev') || (github.ref == 'refs/heads/ci_tests')
+        with:
+          name: opennox-linux-x64
+          path: |
+            build/opennox-launcher
           if-no-files-found: error
           retention-days: 1
 
@@ -209,7 +238,7 @@ jobs:
     name: Repackage Linux release (tar.gz)
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/ci_tests')
-    needs: [linux_docker]
+    needs: [linux_docker_386, linux_docker_x64]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -219,12 +248,19 @@ jobs:
       - name: Cleanup
         run: |
           rm -rf /tmp/linux-tmp
+          rm -rf /tmp/linux-tmp64
           mkdir -p /tmp/linux-tmp
+          mkdir -p /tmp/linux-tmp64
 
       - uses: actions/download-artifact@v3
         with:
           name: opennox-linux
           path: /tmp/linux-tmp/
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: opennox-linux-x64
+          path: /tmp/linux-tmp64/
 
       - name: Repackage release
         run: |
@@ -233,6 +269,7 @@ jobs:
           rm -rf /tmp/opennox-linux
           mkdir -p /tmp/opennox-linux
           cp /tmp/linux-tmp/* /tmp/opennox-linux
+          cp /tmp/linux-tmp64/* /tmp/opennox-linux
           cp ./CHANGELOG.md /tmp/opennox-linux
 
           export VERSION=$(git name-rev --tags --name-only $(git rev-parse HEAD))
@@ -252,7 +289,7 @@ jobs:
     name: Repackage Linux release (AppImage)
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/appimage-workflow-test') || (github.ref == 'refs/heads/ci_tests')
-    needs: [linux_docker]
+    needs: [linux_docker_386]
     steps:
       - uses: actions/download-artifact@v3
         name: Retrieving compiled OpenNox

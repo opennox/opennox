@@ -24,7 +24,7 @@ version-script: |
 architectures:
   - build-on: i386
     run-on: [amd64]
-    
+
 environment:
   LIBGL_DRIVERS_PATH: $SNAP/usr/lib/i386-linux-gnu/dri
 
@@ -85,7 +85,7 @@ parts:
       apt update
       apt install -y build-essential gcc gcc-multilib libsdl2-dev:i386 libopenal-dev:i386
       cd /root/parts/opennox/build/src
-      go run ./internal/noxbuild
+      go run ./internal/noxbuild opennox opennox-hd opennox-server
       snapcraftctl build
     stage-packages:
       - libsdl2-2.0-0:i386
