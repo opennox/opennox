@@ -4,6 +4,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/adrg/xdg"
 	"image"
 	"image/color"
 	"net/http"
@@ -69,7 +70,7 @@ var _ = [1]struct{}{}[unsafe.Sizeof(int(0))-4]
 
 func writeLogsToDir(dir string) error {
 	if dir == "" {
-		dir = filepath.Dir(os.Args[0])
+		dir = filepath.Join(xdg.StateHome, "opennox")
 		if sdir := env.AppUserDir(); sdir != "" {
 			dir = sdir
 		}
@@ -82,7 +83,9 @@ func writeLogsToDir(dir string) error {
 	if isDedicatedServer {
 		name = "opennox-server.log"
 	}
-	return log.WriteToFile(filepath.Join(dir, name))
+	logPath := filepath.Join(dir, name)
+	log.Println("[log] writing logs to:", logPath)
+	return log.WriteToFile(logPath)
 }
 
 func RunArgs(args []string) (gerr error) {
