@@ -1,8 +1,11 @@
 package opennox
 
 import (
+	"unsafe"
+
 	"github.com/noxworld-dev/opennox-lib/types"
 
+	"github.com/noxworld-dev/opennox/v1/audiofx"
 	"github.com/noxworld-dev/opennox/v1/client"
 	"github.com/noxworld-dev/opennox/v1/client/gui"
 	"github.com/noxworld-dev/opennox/v1/client/noxrender"
@@ -151,6 +154,14 @@ func init() {
 	legacy.Sub_43F060 = sub_43F060
 	legacy.Sub_43EC30 = sub_43EC30
 	legacy.Sub_43ECB0 = sub_43ECB0
+	legacy.Sub_487050 = func(a1 unsafe.Pointer) { audioFx.Sub_487050((*audiofx.Struct88)(a1)) }
+	legacy.Sub_4870E0 = func(a1 unsafe.Pointer) unsafe.Pointer {
+		return unsafe.Pointer(audioFx.Sub_4870E0((**audiofx.Struct88)(a1)))
+	}
+	legacy.Sub_487310 = func(a1 unsafe.Pointer) int32 { return audioFx.Sub_487310((*audiofx.Struct264)(a1)) }
+	legacy.Sub_4876A0 = func(a1 unsafe.Pointer) {
+		audioFx.Sub_4876A0((*audiofx.Struct264)(a1))
+	}
 	legacy.Nox_xxx_updateSprings_5113A0 = nox_xxx_updateSprings_5113A0
 	legacy.Nox_xxx_unitIsUnitTT_4E7C80 = nox_xxx_unitIsUnitTT_4E7C80
 	legacy.Nox_xxx_updatePlayer_4F8100 = nox_xxx_updatePlayer_4F8100

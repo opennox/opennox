@@ -21,6 +21,7 @@ extern unsigned int dword_587000_93156;
 extern nox_gui_animation* nox_wnd_xxx_1309740;
 */
 import "C"
+import "unsafe"
 
 var (
 	Nox_exit                                              func(exitCode int)
@@ -111,10 +112,6 @@ func Sub_431270() {
 	C.sub_431270()
 }
 
-func Sub_4875F0() {
-	C.sub_4875F0()
-}
-
 func Sub_4870A0() {
 	C.sub_4870A0()
 }
@@ -129,4 +126,8 @@ func Nox_xxx_servSetPlrLimit_409F80(v int) {
 
 func Nox_xxx_guiChatShowHide_445730(v bool) {
 	C.nox_xxx_guiChatShowHide_445730(C.int(bool2int(v)))
+}
+
+func Sub_487680(a1 unsafe.Pointer) {
+	C.sub_487680(a1)
 }

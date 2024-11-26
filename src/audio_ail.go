@@ -10,6 +10,7 @@ import (
 
 	"github.com/noxworld-dev/opennox-lib/ifs"
 
+	"github.com/noxworld-dev/opennox/v1/audiofx"
 	"github.com/noxworld-dev/opennox/v1/common/memmap"
 	"github.com/noxworld-dev/opennox/v1/internal/binfile"
 	"github.com/noxworld-dev/opennox/v1/legacy"
@@ -28,6 +29,7 @@ var (
 var (
 	audioTimer93944 ail.Timer = math.MaxUint32
 	audioDev        ail.Driver
+	audioFx         *audiofx.AudioFx
 )
 
 func sub_43EFD0(a1 unsafe.Pointer) int {
@@ -78,7 +80,7 @@ func sub_43ECB0(a1 unsafe.Pointer) int {
 func sub_43E940(a1 unsafe.Pointer) int {
 	ail.Startup()
 	audioTimer93944 = ail.RegisterTimer(func(u uint32) {
-		sub_486EF0()
+		audioFx.Sub_486EF0()
 		legacy.MusicModule.Sub_43D2D0()
 		(*timer.TimerGroup)(legacy.Get_dword_587000_127004()).ClearUpdated()
 	})
@@ -213,11 +215,12 @@ func nox_xxx_parseSoundSetBin_424170(path string) error {
 }
 
 func nox_audio_initall(a3 int) int {
+	audioFx = audiofx.NewAudioFx(legacy.Get_dword_587000_155144(), memmap.PtrT[*timer.TimerGroup](0x5D4594, 1193340))
 	if nox_enable_audio == 0 {
 		return 1
 	}
 	if a3 != 0 {
-		sub_486F30()
+		audioFx.Initialize()
 		if sub_4311F0() != 0 {
 			legacy.Set_dword_587000_81128(unsafe.Add(legacy.Get_dword_5d4594_805984(), 88))
 			dword_5d4594_805980 = sub_4866F0("audio", "audio")
@@ -261,29 +264,6 @@ func sub_4311F0() int {
 	v0 := legacy.Sub_487150(-1, unsafe.Pointer(&v2[0]))
 	legacy.Set_dword_5d4594_805984(v0)
 	return bool2int(v0 != nil && legacy.Sub_487790(v0, 16) == 16)
-}
-
-func sub_486F30() int {
-	nox_common_list_clear_425760(legacy.Get_dword_587000_155144())
-	nox_common_list_clear_425760(unsafe.Add(legacy.Get_dword_587000_155144(), 12))
-	*(*uint32)(unsafe.Add(legacy.Get_dword_587000_155144(), 24)) = 0
-	*memmap.PtrPtr(0x5D4594, 1193340) = unsafe.Add(legacy.Get_dword_587000_155144(), 32)
-	(*timer.TimerGroup)(unsafe.Add(legacy.Get_dword_587000_155144(), 32)).Init()
-	dword_5d4594_1193336 = 1
-	return 0
-}
-
-func sub_486EF0() {
-	if dword_5d4594_1193336 != 0 {
-		if *(*uint32)(unsafe.Add(legacy.Get_dword_587000_155144(), 24)) == 0 {
-			v1 := *(*unsafe.Pointer)(unsafe.Add(legacy.Get_dword_587000_155144(), 12))
-			for it := unsafe.Add(legacy.Get_dword_587000_155144(), 12); v1 != it; v1 = *(*unsafe.Pointer)(v1) {
-				if (*(*int32)(unsafe.Add(v1, 4*3)) & 2) == 0 {
-					ccall.CallVoidPtr(*(*unsafe.Pointer)(unsafe.Add(v1, 4*54)), v1)
-				}
-			}
-		}
-	}
 }
 
 var _ = [1]struct{}{}[288-unsafe.Sizeof(audioStructXxx{})]
