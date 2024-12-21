@@ -110,7 +110,6 @@ func nox_xxx_updatePlayer_4F8100(u *server.Object) {
 		}
 	}
 	if ud.SpellCastStart != 0 && ud.Field47_0 == 0 && (s.Frame()-ud.SpellCastStart) > spellTimeout {
-		s.UpdateSpellTargetForManualCast(u)
 		s.PlayerSpell(u) // (manual?) spell casting
 		ud.SpellCastStart = 0
 	}
@@ -580,7 +579,6 @@ func (s *Server) unitUpdatePlayerImplB(u *server.Object, a1, v68 bool) {
 			nox_xxx_playerSetState_4FA020(u, server.PlayerState13)
 			if !noxflags.HasGame(noxflags.GameModeChat) {
 				if ud.SpellCastStart != 0 {
-					s.UpdateSpellTargetForManualCast(u)
 					s.PlayerSpell(u)
 					ud.SpellCastStart = 0
 				} else {
@@ -592,7 +590,6 @@ func (s *Server) unitUpdatePlayerImplB(u *server.Object, a1, v68 bool) {
 			nox_xxx_playerSetState_4FA020(u, server.PlayerState13)
 			if !noxflags.HasGame(noxflags.GameModeChat) {
 				if ud.SpellCastStart != 0 {
-					s.UpdateSpellTargetForManualCast(u)
 					s.PlayerSpell(u)
 					ud.SpellCastStart = 0
 				}
@@ -604,7 +601,6 @@ func (s *Server) unitUpdatePlayerImplB(u *server.Object, a1, v68 bool) {
 		case player.CCCastMostRecentSpell:
 			if !noxflags.HasGame(noxflags.GameModeChat) {
 				if ud.SpellCastStart != 0 {
-					s.UpdateSpellTargetForManualCast(u)
 					s.PlayerSpell(u)
 					ud.SpellCastStart = 0
 				}

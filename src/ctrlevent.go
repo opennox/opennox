@@ -3,6 +3,7 @@ package opennox
 import (
 	"bufio"
 	"encoding/binary"
+	"fmt"
 	"image"
 	"math"
 	"strings"
@@ -24,6 +25,7 @@ import (
 
 var (
 	allowEmotionsInSolo = true
+	wasManualSpellInvertKeyPressed = false
 )
 
 func init() {
@@ -139,8 +141,12 @@ func (c *CtrlEventHandler) nox_xxx_clientControl_42D6B0_orientation(mpos image.P
 }
 
 func (c *CtrlEventHandler) nox_xxx_clientControl_42D6B0_A(a4 *CtrlEventBinding) {
+
 	fps := noxServer.TickRate()
 	pl := getCurPlayer()
+
+	var FoundManualInvertKey = false //stores whether or not the invert key was held this frame
+
 	for it := a4; it != nil; it = it.field21 {
 		for _, k := range it.events {
 			switch k {
@@ -326,6 +332,15 @@ func (c *CtrlEventHandler) nox_xxx_clientControl_42D6B0_A(a4 *CtrlEventBinding) 
 				}
 			case keybind.EventInvertSpellTarget:
 				c.nox_ctrlevent_action_42E670(player.CCInvertSpellTarget, 0)
+			case keybind.EventInvertSpellTargetManualCast:
+				if inputKeyCheckTimeout(k, fps/4) {
+					if !wasManualSpellInvertKeyPressed {
+						fmt.Println("Just pressed") //Key was not pressed, but is pressed now
+						wasManualSpellInvertKeyPressed = true
+					}
+					inputSetKeyTimeout(k)
+				}
+				FoundManualInvertKey = true
 			case keybind.EventToggleRank:
 				if noxflags.HasGame(noxflags.GameOnline) {
 					c.nox_ctrlevent_action_42E670(player.CCToggleRank, 0)
@@ -374,6 +389,22 @@ func (c *CtrlEventHandler) nox_xxx_clientControl_42D6B0_A(a4 *CtrlEventBinding) 
 			}
 		}
 	}
+
+	if wasManualSpellInvertKeyPressed && !FoundManualInvertKey {
+		wasManualSpellInvertKeyPressed = false
+		// TODO: Play spellbar shifting sound
+
+		var a bool = noxClient.ManualCastDirectionInverted
+		var b bool = !a
+		fmt.Println("Toggling inversion of manual cast from ", a , " to ", b)
+		noxClient.ManualCastDirectionInverted = b
+	}
+
+	// NOTE: Sending CCInvertSpellTarget to the server flips the player's spellbar arrows, but does not affect the direction of the manual cast
+	//if noxClient.ManualCastDirectionInverted {
+	//	c.nox_ctrlevent_action_42E670(player.CCInvertSpellTarget, 0)
+	//}
+
 }
 
 func clientAcceptTradeOrDrop() {
