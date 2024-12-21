@@ -75,6 +75,7 @@ type Client struct {
 	dword_5d4594_1046604   int
 	tsFullPRev             uint32
 	tsUpperPrev            uint32
+	ManualCastDirectionInverted bool
 }
 
 func (c *Client) Cli() *client.Client {

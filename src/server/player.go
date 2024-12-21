@@ -689,7 +689,7 @@ type Player struct {
 	field3624           uint32         // 906, 3624
 	CameraFollowObj     *Object        // 907, 3628
 	Pos3632Vec          types.Pointf   // 908, 3632
-	Obj3640             *Object        // 910, 3640
+	Obj3640             *Object        // 910, 3640, object that is set as spell target when casting from the spell bar
 	Journal             *PlayerJournal // 911, 3644, pointer to journal
 	SummonOrderAll      uint32         // 912, 3648
 	field3652           uint32
