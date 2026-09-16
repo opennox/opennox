@@ -3,6 +3,7 @@ package noxrender
 import (
 	"fmt"
 	"image"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -117,9 +118,14 @@ func loadFont(path string, size int) (font.Face, error) {
 		f, err = ifs.Open(path + ".otf")
 	}
 	if err == nil {
-		fnt, err := opentype.ParseReaderAt(f)
+		defer f.Close()
+		// Keep the font data in memory instead of retaining an open file.
+		data, err := io.ReadAll(f)
 		if err != nil {
-			_ = f.Close()
+			return nil, fmt.Errorf("%s: %w", filepath.Base(f.Name()), err)
+		}
+		fnt, err := opentype.Parse(data)
+		if err != nil {
 			return nil, fmt.Errorf("%s: %w", filepath.Base(f.Name()), err)
 		}
 		face, err := opentype.NewFace(fnt, &opentype.FaceOptions{
@@ -127,10 +133,8 @@ func loadFont(path string, size int) (font.Face, error) {
 			Hinting: font.HintingNone,
 		})
 		if err != nil {
-			_ = f.Close()
 			return nil, err
 		}
-		// not closing the file, since it's still used by the font
 		return face, nil
 	}
 	f, err = ifs.Open(path + noxfont.Ext)
