@@ -1310,10 +1310,9 @@ char sub_57AAA0(const char* a1, char* a2, int* a3) {
 	char* v15;          // edi
 	char* v16;          // eax
 	int v18;            // [esp+10h] [ebp-27Ch]
-	char v19[24];       // [esp+14h] [ebp-278h]
-	char v20[36];       // [esp+2Ch] [ebp-260h]
-	char v21[24];       // [esp+50h] [ebp-23Ch]
-	char v22[36];       // [esp+68h] [ebp-224h]
+	// Keep each map header and its rule flags in one contiguous buffer.
+	char v19[60];       // [esp+14h] [ebp-278h]
+	char v21[60];       // [esp+50h] [ebp-23Ch]
 	char v23[256];      // [esp+8Ch] [ebp-200h]
 	char FileName[256]; // [esp+18Ch] [ebp-100h]
 
@@ -1346,7 +1345,7 @@ char sub_57AAA0(const char* a1, char* a2, int* a3) {
 			do {
 				if (nox_xxx_spellIsValid_424B50(v7) && !sub_454000((int)(a2 + 24), v7) &&
 					nox_xxx_spellFlags_424A70(v7) & 0x7000000 &&
-					(!dword_5d4594_2650652 || sub_454000((int)v22, v7) || !sub_454000((int)v20, v7))) {
+					(!dword_5d4594_2650652 || sub_454000((int)(v21 + 24), v7) || !sub_454000((int)(v19 + 24), v7))) {
 					v9 = nox_xxx_spellNameByN_424870(v7);
 					nox_sprintf(v23, "%s %s \"%s\" %s\n", "set", "spell", v9, "off");
 					nox_fs_fputs(v4, v23);
