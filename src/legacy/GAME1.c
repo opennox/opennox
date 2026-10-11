@@ -678,7 +678,9 @@ int nox_xxx_cliCanTalkMB_4100F0(short* a1) {
 	if (!*a1) {
 		return 1;
 	}
-	while (!HIBYTE(v1)) {
+	// Only plain ASCII can be sent as single-byte text: the client decodes it as UTF-8,
+	// so Latin-1 range characters (e.g. Russian localizations) must go as UTF-16.
+	while ((unsigned short)v1 < 0x80) {
 		v1 = *v2;
 		++v2;
 		if (!v1) {
