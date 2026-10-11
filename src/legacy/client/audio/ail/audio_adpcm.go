@@ -16,6 +16,19 @@ func newADPCMDecoder(r *wavReader, hr io.Reader, wf waveFormat, hdr []byte) (*ad
 		channels:   int(wf.channels),
 		blockSize:  int(wf.blockAlign),
 	}
+	if d.channels != 1 && d.channels != 2 {
+		return nil, fmt.Errorf("unsupported ADPCM channels count: %d", d.channels)
+	}
+	if d.channels == 1 {
+		if d.blockSize < 5 {
+			return nil, fmt.Errorf("invalid ADPCM block size: %d", d.blockSize)
+		}
+	} else if d.blockSize <= 8 || (d.blockSize-8)%8 != 0 {
+		return nil, fmt.Errorf("invalid ADPCM stereo block size: %d", d.blockSize)
+	}
+	if d.blockSize > len(d.buffer) {
+		return nil, fmt.Errorf("ADPCM block size is too large: %d", d.blockSize)
+	}
 	var buf [12]byte
 	_, err := io.ReadFull(hr, buf[:12])
 	if err != nil {
@@ -39,6 +52,7 @@ type adpcmDecoder struct {
 	samples    int
 	sampleRate int
 	channels   int
+	failed     bool
 
 	buffered int
 	buffer   [16 * 1024 * 3]byte
@@ -58,26 +72,44 @@ func (d *adpcmDecoder) SampleRate() int {
 
 func (d *adpcmDecoder) Close() {}
 
-func (d *adpcmDecoder) Decode(out []int16) (int, bool) {
-	blockSize := d.blockSize
+func (d *adpcmDecoder) Decode(out []int16) (n int, ok bool) {
+	if d.failed {
+		return 0, false
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			d.failed = true
+			d.buffered = 0
+			audioLog.Printf("ADPCM decoder panic in %q: %v", d.r.Name(), r)
+			n, ok = 0, false
+		}
+	}()
+	return d.decode(out)
+}
 
-	samples := 0
+func (d *adpcmDecoder) decode(out []int16) (int, bool) {
+	blockSize := d.blockSize
+	if blockSize <= 0 || blockSize > len(d.buffer) {
+		return 0, false
+	}
 	if d.position >= d.samples {
 		return 0, false
 	}
 
-	hasErr := false
+	// Fill the whole block, possibly crossing "data" chunk boundaries.
+	for d.buffered < blockSize {
+		n, err := d.r.Read(d.buffer[d.buffered:blockSize])
+		if n > 0 {
+			d.buffered += n
+		}
+		if err != nil || n <= 0 {
+			break
+		}
+	}
 	if d.buffered < blockSize {
-		remaining, _ := d.r.ChunkSize()
-		if remaining == 0 {
-			return 0, false
-		}
-		if remaining > blockSize-d.buffered {
-			remaining = blockSize - d.buffered
-		}
-		n, err := d.r.ReadFull(d.buffer[d.buffered : d.buffered+remaining])
-		d.buffered += n
-		hasErr = err != nil
+		// Stream ended with an incomplete block; do not decode garbage.
+		d.buffered = 0
+		return 0, false
 	}
 
 	if d.channels == 1 {
@@ -85,19 +117,18 @@ func (d *adpcmDecoder) Decode(out []int16) (int, bool) {
 	} else {
 		out = decodeADPCMStereo(out[:0], d.buffer[:blockSize])
 	}
-	samples = len(out) // TODO(dennwc): is it true for stereo?
+	samples := len(out) // TODO(dennwc): is it true for stereo?
 
 	d.buffered -= blockSize
-	if d.buffered != 0 {
+	if d.buffered > 0 {
 		copy(d.buffer[0:], d.buffer[blockSize:blockSize+d.buffered])
+	} else {
+		d.buffered = 0
 	}
 	if samples/d.channels+d.position >= d.samples {
 		samples = (d.samples - d.position) * d.channels
 	}
 	d.position += samples / d.channels
-	if samples == 0 && hasErr {
-		return 0, false
-	}
 	return samples, true
 }
 
@@ -121,6 +152,7 @@ func (d *adpcmDecoder) Seek(position int) {
 		} else {
 			d.r.Skip(csz)
 			d.position += chunkBlocks * samplesPerBlock
+			blocks -= chunkBlocks
 		}
 	}
 
@@ -145,8 +177,11 @@ var (
 )
 
 func decodeADPCMMono(out []int16, data []byte) []int16 {
+	if len(data) < 4 {
+		return out
+	}
 	predictor := int16(data[0]) | (int16(data[1]) << 8)
-	index := int(data[2])
+	index := satindex(int(data[2]))
 
 	out = append(out, predictor)
 	for i := 4; i < len(data); i++ {
@@ -202,13 +237,16 @@ func satindex(x int) int {
 }
 
 func decodeADPCMStereo(out []int16, data []byte) []int16 {
+	if len(data) < 8 {
+		return out
+	}
 	lpredictor := int16(data[0]) | (int16(data[1]) << 8)
-	lindex := int(data[2])
+	lindex := satindex(int(data[2]))
 	rpredictor := int16(data[4]) | (int16(data[5]) << 8)
-	rindex := int(data[6])
+	rindex := satindex(int(data[6]))
 
 	out = append(out, lpredictor, rpredictor)
-	for i := 8; i < len(data); i += 8 {
+	for i := 8; i+8 <= len(data); i += 8 {
 		for j := 0; j < 4; j++ {
 			lpredictor = decodeNibble(lpredictor, data[i+j], lindex)
 			lindex = satindex(lindex + imaIndexTable[data[i+j]&15])
